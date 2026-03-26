@@ -799,3 +799,55 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Admin Tabs */
+.admin-tabs {
+  display: flex;
+  gap: var(--space-1);
+  margin-bottom: var(--space-8);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0;
+}
+
+.admin-tab {
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  cursor: pointer;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.admin-tab:hover {
+  color: var(--text-secondary);
+}
+
+.admin-tab.active {
+  color: var(--text-primary);
+  border-bottom-color: var(--accent-primary);
+}
+
+/* Pricing Editor */
+.pricing-editor-section {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-8);
+  margin-bottom: var(--space-6);
+}
+
+.pricing-editor-heading {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-color);
+}
