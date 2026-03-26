@@ -28,6 +28,26 @@ jobs:
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
+      - name: Obfuscate JavaScript
+        run: |
+          npm install -g javascript-obfuscator
+          for f in dist/assets/*.js; do
+            javascript-obfuscator "$f" \
+              --output "$f" \
+              --compact true \
+              --control-flow-flattening false \
+              --dead-code-injection false \
+              --debug-protection false \
+              --disable-console-output false \
+              --identifier-names-generator hexadecimal \
+              --rename-globals false \
+              --self-defending false \
+              --string-array true \
+              --string-array-encoding 'base64' \
+              --string-array-threshold 0.75 \
+              --unicode-escape-sequence false
+          done
+
       - name: Deploy to VPS via rsync
         uses: easingthemes/ssh-deploy@main
         with:
