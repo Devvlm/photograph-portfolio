@@ -59,7 +59,8 @@
       "subjectRequired": "Subject is required",
       "subjectMinLength": "Please enter a valid subject (minimum 2 characters)",
       "messageRequired": "Message is required",
-      "messageMinLength": "Please enter a message (at least 10 characters)"
+      "messageMinLength": "Please enter a message (at least 10 characters)",
+      "serverError": "Something went wrong. Please try again later."
     },
     "success": "Thank you! Your message has been sent. I'll get back to you soon.",
     "sending": "Sending..."

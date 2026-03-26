@@ -72,18 +72,28 @@ export function initContact() {
     submitBtn.textContent = window.i18n.t('contact.form.sending');
     submitBtn.disabled = true;
 
-    // Simulate submission (visual only mode)
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || '';
+      const res = await fetch(`${apiUrl}/api/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
 
-    // Show success message
-    showMessage('success', window.i18n.t('contact.form.success'));
-
-    // Reset form
-    form.reset();
-
-    // Re-enable button
-    submitBtn.textContent = originalText;
-    submitBtn.disabled = false;
+      if (res.ok) {
+        showMessage('success', window.i18n.t('contact.form.success'));
+        form.reset();
+      } else {
+        const data = await res.json().catch(() => ({}));
+        const msg = data.error || window.i18n.t('contact.form.errors.serverError');
+        showMessage('error', msg);
+      }
+    } catch {
+      showMessage('error', window.i18n.t('contact.form.errors.serverError'));
+    } finally {
+      submitBtn.textContent = originalText;
+      submitBtn.disabled = false;
+    }
   }
 
   // Disable default browser validation popups

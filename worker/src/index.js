@@ -7,6 +7,7 @@ import { handleAuth } from './auth.js';
 import { handlePortfolio } from './portfolio.js';
 import { handleUpload } from './upload.js';
 import { handlePricingText, handleAllTranslations } from './translations.js';
+import { handleContact } from './contact.js';
 
 /** Allowed origins — must match your production domain */
 const ALLOWED_ORIGINS = [
@@ -126,6 +127,11 @@ export default {
       // Route: /api/translations/*
       if (path.startsWith('/api/translations')) {
         return await handleAllTranslations(request, env, { jsonResponse, errorResponse });
+      }
+
+      // Route: /api/contact
+      if (path === '/api/contact') {
+        return await handleContact(request, env, { jsonResponse, errorResponse });
       }
 
       // Route: /api/upload/*

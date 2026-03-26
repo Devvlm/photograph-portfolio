@@ -59,7 +59,8 @@
       "subjectRequired": "Onderwerp is verplicht",
       "subjectMinLength": "Voer een geldig onderwerp in (minimaal 2 tekens)",
       "messageRequired": "Bericht is verplicht",
-      "messageMinLength": "Bericht moet minimaal 10 tekens bevatten"
+      "messageMinLength": "Bericht moet minimaal 10 tekens bevatten",
+      "serverError": "Er is iets misgegaan. Probeer het later opnieuw."
     },
     "success": "Bedankt! Je bericht is verzonden. Ik neem zo snel mogelijk contact met je op.",
     "sending": "Versturen..."

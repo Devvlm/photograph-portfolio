@@ -20,3 +20,4 @@ preview_id = "37a4fb2aa16e437fbe8c86bff6941b5a"
 # Secrets (set via: wrangler secret put SECRET_NAME)
 # - ADMIN_PASSWORD_HASH
 # - JWT_SECRET
+# - RESEND_API_KEY
