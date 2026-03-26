@@ -912,12 +912,61 @@ function setPricingValue(obj, dotKey, value) {
 }
 
 /**
+ * Render a single bullet row element
+ */
+function createBulletRow(bullet = { type: 'item', text: '' }) {
+  const row = document.createElement('div');
+  row.className = 'bullet-row';
+  row.innerHTML = `
+    <select class="bullet-type-select">
+      <option value="item"${bullet.type === 'item' ? ' selected' : ''}>● Item</option>
+      <option value="group"${bullet.type === 'group' ? ' selected' : ''}>— Groep</option>
+    </select>
+    <input type="text" class="bullet-text-input" value="${escapeAttr(bullet.text || '')}" placeholder="Tekst...">
+    <button type="button" class="btn-delete-bullet" title="Verwijder bullet">✕</button>
+  `;
+  row.querySelector('.btn-delete-bullet').addEventListener('click', () => row.remove());
+  return row;
+}
+
+/**
+ * Render all bullets for a package into the bullets-list container
+ */
+function renderBulletsList(pkgKey, bullets) {
+  const container = document.querySelector(`.bullets-list[data-bullets-pkg="${pkgKey}"]`);
+  if (!container) return;
+  container.innerHTML = '';
+  (bullets || []).forEach(b => container.appendChild(createBulletRow(b)));
+}
+
+/**
+ * Read bullets from a bullets-list container
+ */
+function readBulletsList(pkgKey) {
+  const container = document.querySelector(`.bullets-list[data-bullets-pkg="${pkgKey}"]`);
+  if (!container) return [];
+  return Array.from(container.querySelectorAll('.bullet-row')).map(row => ({
+    type: row.querySelector('.bullet-type-select').value,
+    text: row.querySelector('.bullet-text-input').value,
+  }));
+}
+
+function escapeAttr(str) {
+  return String(str).replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+/**
  * Populate form fields from pricingData[lang]
  */
 function populatePricingForm(lang) {
   const data = pricingData[lang] || {};
   document.querySelectorAll('[data-pricing-key]').forEach(el => {
     el.value = getPricingValue(data, el.dataset.pricingKey) || '';
+  });
+  // Render dynamic bullets for each package
+  ['events', 'athlete', 'social'].forEach(pkgKey => {
+    const bullets = (data.packages && data.packages[pkgKey] && data.packages[pkgKey].bullets) || [];
+    renderBulletsList(pkgKey, bullets);
   });
 }
 
@@ -928,6 +977,12 @@ function readPricingForm(lang) {
   if (!pricingData[lang]) pricingData[lang] = {};
   document.querySelectorAll('[data-pricing-key]').forEach(el => {
     setPricingValue(pricingData[lang], el.dataset.pricingKey, el.value);
+  });
+  // Collect dynamic bullets for each package
+  ['events', 'athlete', 'social'].forEach(pkgKey => {
+    if (!pricingData[lang].packages) pricingData[lang].packages = {};
+    if (!pricingData[lang].packages[pkgKey]) pricingData[lang].packages[pkgKey] = {};
+    pricingData[lang].packages[pkgKey].bullets = readBulletsList(pkgKey);
   });
 }
 
@@ -1031,6 +1086,15 @@ function setupPricingEditor() {
   });
 
   document.getElementById('savePricingBtn').addEventListener('click', savePricingTranslations);
+
+  // Add bullet buttons
+  document.querySelectorAll('.add-bullet-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const pkgKey = btn.dataset.bulletsPkg;
+      const container = document.querySelector(`.bullets-list[data-bullets-pkg="${pkgKey}"]`);
+      if (container) container.appendChild(createBulletRow());
+    });
+  });
 }
 
 /* ===================================

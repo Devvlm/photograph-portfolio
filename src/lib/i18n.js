@@ -125,7 +125,10 @@ export class I18n {
       this.updateDOM();
       this.updateHTMLLang();
       this.updateLanguageToggle();
-      
+
+      // Notify components that need a full re-render (e.g. dynamic bullet lists)
+      document.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang } }));
+
       console.log(`Language switched to: ${lang}`);
     } catch (error) {
       console.error(`Failed to set language ${lang}:`, error);

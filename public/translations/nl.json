@@ -82,12 +82,14 @@
         "from": "Vanaf",
         "price": "€650",
         "pitch": "Je krijgt content die direct inzetbaar is én een sterke aftermovie om het event vast te leggen.",
-        "item1": "1 volledige draaidag op locatie",
-        "group1": "Tijdens het event",
-        "item2": "2 social clips (15–20 sec)",
-        "group2": "Na het event",
-        "item3": "1 recap per dag (± 30 sec) — oplevering: volgende dag",
-        "item4": "1 aftermovie (90–120 sec) — oplevering: binnen 3–4 weken",
+        "bullets": [
+          { "type": "item",  "text": "1 volledige draaidag op locatie" },
+          { "type": "group", "text": "Tijdens het event" },
+          { "type": "item",  "text": "2 social clips (15–20 sec)" },
+          { "type": "group", "text": "Na het event" },
+          { "type": "item",  "text": "1 recap per dag (± 30 sec) — oplevering: volgende dag" },
+          { "type": "item",  "text": "1 aftermovie (90–120 sec) — oplevering: binnen 3–4 weken" }
+        ],
         "tagline": "Perfect om je event direct zichtbaar te maken én achteraf impact te houden."
       },
       "athlete": {
@@ -97,9 +99,11 @@
         "from": "Vanaf",
         "price": "€200",
         "pitch": "Je krijgt een persoonlijke video die jouw moment echt laat zien.",
-        "item1": "1 volledige draaidag",
-        "item2": "2 social clips (15–20 sec)",
-        "item3": "1 aftermovie (90–120 sec) — oplevering: binnen 3–4 weken",
+        "bullets": [
+          { "type": "item", "text": "1 volledige draaidag" },
+          { "type": "item", "text": "2 social clips (15–20 sec)" },
+          { "type": "item", "text": "1 aftermovie (90–120 sec) — oplevering: binnen 3–4 weken" }
+        ],
         "tagline": "Ideaal voor content die je kunt delen op socials of gebruiken voor je personal brand."
       },
       "social": {
@@ -109,11 +113,13 @@
         "from": "Vanaf",
         "price": "€325",
         "pitch": "Je schiet in één dag meteen meerdere video's, zodat je vooruit kunt.",
-        "item1": "4 uur op locatie (naar keuze)",
-        "group1": "Short form content",
-        "item2": "5 reels (± 11 sec per video)",
-        "group2": "Long form content",
-        "item3": "1 video (30–60 sec)",
+        "bullets": [
+          { "type": "item",  "text": "4 uur op locatie (naar keuze)" },
+          { "type": "group", "text": "Short form content" },
+          { "type": "item",  "text": "5 reels (± 11 sec per video)" },
+          { "type": "group", "text": "Long form content" },
+          { "type": "item",  "text": "1 video (30–60 sec)" }
+        ],
         "tagline": "Handig als je in één keer een sterke contentbatch wil maken."
       }
     }

@@ -60,6 +60,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Initialize pricing section
   initPricing();
 
+  // Re-render pricing on language switch (bullets are dynamic, not data-i18n-key based)
+  document.addEventListener('languageChanged', () => initPricing());
+
   // Initialize 3D hero section (async, may take time)
   await initHero();
 

@@ -82,12 +82,14 @@
         "from": "From",
         "price": "€650",
         "pitch": "You get content that's immediately usable plus a strong aftermovie to capture the event.",
-        "item1": "1 full shoot day on location",
-        "group1": "During the event",
-        "item2": "2 social clips (15–20 sec)",
-        "group2": "After the event",
-        "item3": "1 recap per day (± 30 sec) — delivery: next day",
-        "item4": "1 aftermovie (90–120 sec) — delivery: within 3–4 weeks",
+        "bullets": [
+          { "type": "item",  "text": "1 full shoot day on location" },
+          { "type": "group", "text": "During the event" },
+          { "type": "item",  "text": "2 social clips (15–20 sec)" },
+          { "type": "group", "text": "After the event" },
+          { "type": "item",  "text": "1 recap per day (± 30 sec) — delivery: next day" },
+          { "type": "item",  "text": "1 aftermovie (90–120 sec) — delivery: within 3–4 weeks" }
+        ],
         "tagline": "Perfect to make your event immediately visible and keep impact afterward."
       },
       "athlete": {
@@ -97,9 +99,11 @@
         "from": "From",
         "price": "€200",
         "pitch": "You get a personal video that truly showcases your moment.",
-        "item1": "1 full shoot day",
-        "item2": "2 social clips (15–20 sec)",
-        "item3": "1 aftermovie (90–120 sec) — delivery: within 3–4 weeks",
+        "bullets": [
+          { "type": "item", "text": "1 full shoot day" },
+          { "type": "item", "text": "2 social clips (15–20 sec)" },
+          { "type": "item", "text": "1 aftermovie (90–120 sec) — delivery: within 3–4 weeks" }
+        ],
         "tagline": "Ideal for content you can share on socials or use for your personal brand."
       },
       "social": {
@@ -109,11 +113,13 @@
         "from": "From",
         "price": "€325",
         "pitch": "You shoot multiple videos in one day so you can plan ahead.",
-        "item1": "4 hours on location (your choice)",
-        "group1": "Short form content",
-        "item2": "5 reels (± 11 sec per video)",
-        "group2": "Long form content",
-        "item3": "1 video (30–60 sec)",
+        "bullets": [
+          { "type": "item",  "text": "4 hours on location (your choice)" },
+          { "type": "group", "text": "Short form content" },
+          { "type": "item",  "text": "5 reels (± 11 sec per video)" },
+          { "type": "group", "text": "Long form content" },
+          { "type": "item",  "text": "1 video (30–60 sec)" }
+        ],
         "tagline": "Great if you want to create a strong content batch in one go."
       }
     }

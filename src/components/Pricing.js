@@ -2,59 +2,33 @@
    Pricing Section Component
    =================================== */
 
-/**
- * Defines rendering structure for each package.
- * 'item' = bullet row, 'group' = category label row.
- * The key maps to a translation key within the package namespace.
- */
-const pricingStructure = [
-  {
-    key: 'events',
-    rows: [
-      { type: 'item',  key: 'item1' },
-      { type: 'group', key: 'group1' },
-      { type: 'item',  key: 'item2' },
-      { type: 'group', key: 'group2' },
-      { type: 'item',  key: 'item3' },
-      { type: 'item',  key: 'item4' },
-    ],
-  },
-  {
-    key: 'athlete',
-    rows: [
-      { type: 'item', key: 'item1' },
-      { type: 'item', key: 'item2' },
-      { type: 'item', key: 'item3' },
-    ],
-  },
-  {
-    key: 'social',
-    rows: [
-      { type: 'item',  key: 'item1' },
-      { type: 'group', key: 'group1' },
-      { type: 'item',  key: 'item2' },
-      { type: 'group', key: 'group2' },
-      { type: 'item',  key: 'item3' },
-    ],
-  },
-];
+const PACKAGES = ['events', 'athlete', 'social'];
 
 function t(key) {
   return window.i18n ? window.i18n.t(key) : key;
 }
 
-function renderRows(pkgKey, rows) {
-  return rows.map(row => {
-    const fullKey = `${pkgKey}.${row.key}`;
-    if (row.type === 'group') {
-      return `<p class="pricing-item-group" data-i18n-key="${fullKey}">${t(fullKey)}</p>`;
+function getPkgData(pkgKey) {
+  if (!window.i18n) return null;
+  return window.i18n.getNestedValue(window.i18n.translations, `pricing.packages.${pkgKey}`);
+}
+
+function renderBullets(pkgKey) {
+  const pkg = getPkgData(pkgKey);
+  const bullets = pkg?.bullets;
+
+  if (!bullets || !Array.isArray(bullets) || bullets.length === 0) return '';
+
+  return bullets.map(b => {
+    if (b.type === 'group') {
+      return `<p class="pricing-item-group">${b.text || ''}</p>`;
     }
-    return `<li class="pricing-item" data-i18n-key="${fullKey}">${t(fullKey)}</li>`;
+    return `<li class="pricing-item">${b.text || ''}</li>`;
   }).join('\n');
 }
 
-function renderCard(pkg) {
-  const pk = `pricing.packages.${pkg.key}`;
+function renderCard(pkgKey) {
+  const pk = `pricing.packages.${pkgKey}`;
   return `
     <article class="pricing-card">
       <div class="pricing-card-header">
@@ -75,7 +49,7 @@ function renderCard(pkg) {
       <div class="pricing-card-inclusions">
         <p class="pricing-inclusions-label" data-i18n-key="pricing.includesLabel">${t('pricing.includesLabel')}</p>
         <ul class="pricing-items">
-          ${renderRows(pk, pkg.rows)}
+          ${renderBullets(pkgKey)}
         </ul>
       </div>
 
@@ -100,7 +74,7 @@ export function initPricing() {
       </div>
 
       <div class="pricing-grid">
-        ${pricingStructure.map(renderCard).join('')}
+        ${PACKAGES.map(renderCard).join('')}
       </div>
 
       <div class="pricing-cta">
