@@ -97,14 +97,80 @@ export async function handleContact(request, env, { jsonResponse, errorResponse 
     from: 'Dtrmnd Visuals <contact@dtrmndvisuals.com>',
     to: ['devinio17@hotmail.com'],
     reply_to: emailTrim,
-    subject: `[Contact] ${safeSubject}`,
-    text: `Name: ${safeName}\nEmail: ${emailTrim}\n\n${safeMessage}`,
-    html: `
-      <p><strong>Name:</strong> ${safeName}</p>
-      <p><strong>Email:</strong> <a href="mailto:${emailTrim}">${emailTrim}</a></p>
-      <hr>
-      <p>${htmlMessage}</p>
-    `,
+    subject: `Nieuwe contactaanvraag: ${safeSubject}`,
+    text: `Naam: ${safeName}\nE-mail: ${emailTrim}\nOnderwerp: ${safeSubject}\n\n${safeMessage}`,
+    html: `<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0;padding:0;background:#111;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#111;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:#1a1a1a;border-radius:12px 12px 0 0;padding:36px 40px 28px;text-align:center;border-bottom:2px solid #e63329;">
+              <p style="margin:0 0 4px;font-size:11px;letter-spacing:3px;color:#e63329;text-transform:uppercase;font-weight:600;">Dtrmnd Visuals</p>
+              <h1 style="margin:0;font-size:22px;font-weight:700;color:#ffffff;letter-spacing:-0.3px;">Nieuwe contactaanvraag</h1>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="background:#1e1e1e;padding:32px 40px;">
+
+              <!-- Sender info -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+                <tr>
+                  <td style="padding:14px 16px;background:#252525;border-radius:8px;border-left:3px solid #e63329;">
+                    <p style="margin:0 0 6px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1.5px;">Van</p>
+                    <p style="margin:0;font-size:16px;color:#fff;font-weight:600;">${safeName}</p>
+                    <a href="mailto:${emailTrim}" style="color:#e63329;font-size:14px;text-decoration:none;">${emailTrim}</a>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Subject -->
+              <p style="margin:0 0 8px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1.5px;">Onderwerp</p>
+              <p style="margin:0 0 24px;font-size:17px;color:#ffffff;font-weight:600;">${safeSubject}</p>
+
+              <!-- Divider -->
+              <hr style="border:none;border-top:1px solid #333;margin:0 0 24px;">
+
+              <!-- Message -->
+              <p style="margin:0 0 8px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1.5px;">Bericht</p>
+              <p style="margin:0;font-size:15px;color:#ccc;line-height:1.7;">${htmlMessage}</p>
+
+            </td>
+          </tr>
+
+          <!-- CTA -->
+          <tr>
+            <td style="background:#1e1e1e;padding:0 40px 32px;text-align:center;">
+              <a href="mailto:${emailTrim}?subject=Re: ${safeSubject}"
+                 style="display:inline-block;background:#e63329;color:#fff;text-decoration:none;padding:13px 32px;border-radius:6px;font-size:14px;font-weight:700;letter-spacing:0.5px;">
+                Beantwoorden
+              </a>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background:#161616;border-radius:0 0 12px 12px;padding:20px 40px;text-align:center;border-top:1px solid #2a2a2a;">
+              <p style="margin:0;font-size:12px;color:#555;">Verzonden via dtrmndvisuals.com</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`,
   };
 
   let resendRes;
