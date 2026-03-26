@@ -10,6 +10,11 @@ binding = "PORTFOLIO_BUCKET"
 bucket_name = "portfolio-media"
 preview_bucket_name = "portfolio-media-dev"
 
+[[kv_namespaces]]
+binding = "TRANSLATIONS_KV"
+id = "translations_kv_placeholder"
+preview_id = "translations_kv_preview_placeholder"
+
 # Secrets (set via: wrangler secret put SECRET_NAME)
 # - ADMIN_PASSWORD_HASH (bcrypt hash of admin password)
 # - JWT_SECRET (random string for signing tokens)

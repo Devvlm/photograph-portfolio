@@ -11,6 +11,8 @@ import { authService } from './lib/auth.js';
 import { portfolioService, storageService } from './lib/database.js';
 import { ImageCropper } from './lib/imageCropper.js';
 
+const API_BASE = import.meta.env.VITE_API_URL || '';
+
 // State
 let currentFilter = 'all';
 let portfolioItems = [];
@@ -881,5 +883,170 @@ function formatDate(dateString) {
 window.closeModal = closeModal;
 window.closeDeleteModal = closeDeleteModal;
 
+/* ===================================
+   Pricing Editor
+   =================================== */
+
+let activePricingLang = 'nl';
+/** In-memory store: { nl: {...}, en: {...} } */
+const pricingData = { nl: {}, en: {} };
+
+/**
+ * Get nested value by dot-notation key
+ */
+function getPricingValue(obj, dotKey) {
+  return dotKey.split('.').reduce((cur, k) => (cur && cur[k] !== undefined ? cur[k] : ''), obj);
+}
+
+/**
+ * Set nested value by dot-notation key
+ */
+function setPricingValue(obj, dotKey, value) {
+  const keys = dotKey.split('.');
+  let cur = obj;
+  for (let i = 0; i < keys.length - 1; i++) {
+    if (!cur[keys[i]] || typeof cur[keys[i]] !== 'object') cur[keys[i]] = {};
+    cur = cur[keys[i]];
+  }
+  cur[keys[keys.length - 1]] = value;
+}
+
+/**
+ * Populate form fields from pricingData[lang]
+ */
+function populatePricingForm(lang) {
+  const data = pricingData[lang] || {};
+  document.querySelectorAll('[data-pricing-key]').forEach(el => {
+    el.value = getPricingValue(data, el.dataset.pricingKey) || '';
+  });
+}
+
+/**
+ * Read form fields into pricingData[lang]
+ */
+function readPricingForm(lang) {
+  if (!pricingData[lang]) pricingData[lang] = {};
+  document.querySelectorAll('[data-pricing-key]').forEach(el => {
+    setPricingValue(pricingData[lang], el.dataset.pricingKey, el.value);
+  });
+}
+
+/**
+ * Load pricing translations from the API for both languages
+ */
+async function loadPricingTranslations() {
+  for (const lang of ['nl', 'en']) {
+    try {
+      // First load static file as baseline
+      const staticRes = await fetch(`/translations/${lang}.json`);
+      if (staticRes.ok) {
+        const staticData = await staticRes.json();
+        pricingData[lang] = staticData.pricing || {};
+      }
+      // Then try API overrides (KV)
+      if (API_BASE) {
+        const apiRes = await fetch(`${API_BASE}/api/pricing-text/${lang}`);
+        if (apiRes.ok) {
+          const overrides = await apiRes.json();
+          if (overrides && Object.keys(overrides).length > 0) {
+            // Deep merge overrides on top of static
+            deepMergeInto(pricingData[lang], overrides);
+          }
+        }
+      }
+    } catch (e) {
+      console.error(`Failed to load pricing for ${lang}:`, e);
+    }
+  }
+  populatePricingForm(activePricingLang);
+}
+
+function deepMergeInto(target, source) {
+  for (const key of Object.keys(source || {})) {
+    if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+      if (!target[key] || typeof target[key] !== 'object') target[key] = {};
+      deepMergeInto(target[key], source[key]);
+    } else if (source[key] !== undefined && source[key] !== '') {
+      target[key] = source[key];
+    }
+  }
+}
+
+/**
+ * Save pricing translations to the API for both languages
+ */
+async function savePricingTranslations() {
+  // Capture current form into active lang first
+  readPricingForm(activePricingLang);
+
+  if (!API_BASE) {
+    showToast('API niet geconfigureerd — sla wijzigingen op via de bronbestanden.', 'error');
+    return;
+  }
+
+  const token = authService.getToken();
+  if (!token) {
+    showToast('Niet ingelogd', 'error');
+    return;
+  }
+
+  showLoading('Opslaan...');
+  try {
+    for (const lang of ['nl', 'en']) {
+      const res = await fetch(`${API_BASE}/api/pricing-text/${lang}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(pricingData[lang]),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `Fout bij opslaan ${lang}`);
+      }
+    }
+    showToast('Tarieven teksten opgeslagen', 'success');
+  } catch (e) {
+    showToast('Opslaan mislukt: ' + e.message, 'error');
+  } finally {
+    hideLoading();
+  }
+}
+
+/**
+ * Set up pricing tab UI
+ */
+function setupPricingEditor() {
+  // Tab switching
+  document.querySelectorAll('.admin-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const target = tab.dataset.tab;
+      document.getElementById('tabPortfolio').style.display = target === 'portfolio' ? '' : 'none';
+      document.getElementById('tabPricing').style.display = target === 'pricing' ? '' : 'none';
+      if (target === 'pricing') loadPricingTranslations();
+    });
+  });
+
+  // Language switching within pricing tab
+  document.querySelectorAll('[data-pricing-lang]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Save current form state before switching
+      readPricingForm(activePricingLang);
+      // Switch language
+      activePricingLang = btn.dataset.pricingLang;
+      document.querySelectorAll('[data-pricing-lang]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      populatePricingForm(activePricingLang);
+    });
+  });
+
+  // Save button
+  document.getElementById('savePricingBtn').addEventListener('click', savePricingTranslations);
+}
+
 // Initialize
 init();
+setupPricingEditor();

@@ -3,6 +3,20 @@
  * Handles language detection, translation loading, and DOM updates
  */
 
+const API_BASE = import.meta.env.VITE_API_URL || '';
+
+function deepMerge(target, source) {
+  const result = { ...target };
+  for (const key of Object.keys(source || {})) {
+    if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+      result[key] = deepMerge(target[key] || {}, source[key]);
+    } else if (source[key] !== undefined && source[key] !== '') {
+      result[key] = source[key];
+    }
+  }
+  return result;
+}
+
 export class I18n {
   constructor() {
     this.currentLanguage = 'nl'; // default language
@@ -53,10 +67,30 @@ export class I18n {
       if (!response.ok) {
         throw new Error(`Failed to load translations for ${lang}`);
       }
-      return await response.json();
+      const staticTranslations = await response.json();
+
+      // Try to load pricing overrides from the worker KV
+      if (API_BASE) {
+        try {
+          const overridesRes = await fetch(`${API_BASE}/api/pricing-text/${lang}`);
+          if (overridesRes.ok) {
+            const overrides = await overridesRes.json();
+            if (overrides && Object.keys(overrides).length > 0) {
+              staticTranslations.pricing = deepMerge(
+                staticTranslations.pricing || {},
+                overrides
+              );
+            }
+          }
+        } catch (_) {
+          // Silently fall back to static translations
+        }
+      }
+
+      return staticTranslations;
     } catch (error) {
       console.error(`Error loading translations for ${lang}:`, error);
-      
+
       // Fallback to default language
       if (lang !== this.fallbackLanguage) {
         console.log(`Falling back to ${this.fallbackLanguage}`);

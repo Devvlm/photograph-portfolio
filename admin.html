@@ -50,6 +50,15 @@
 
       <!-- Main Content -->
       <main class="admin-content">
+
+        <!-- Tab Navigation -->
+        <div class="admin-tabs">
+          <button class="admin-tab active" data-tab="portfolio">Portfolio Items</button>
+          <button class="admin-tab" data-tab="pricing">Tarieven teksten</button>
+        </div>
+
+        <!-- Portfolio Tab -->
+        <div id="tabPortfolio" class="admin-tab-panel">
         <h1 class="admin-title">Portfolio Items</h1>
         <p class="admin-subtitle">Manage your portfolio images and videos</p>
 
@@ -76,6 +85,225 @@
           <p class="empty-state-text">Add your first portfolio item to get started.</p>
           <button class="btn btn-primary" onclick="document.getElementById('addItemBtn').click()">Add First Item</button>
         </div>
+        </div><!-- /tabPortfolio -->
+
+        <!-- Pricing Tab -->
+        <div id="tabPricing" class="admin-tab-panel" style="display:none;">
+          <h1 class="admin-title">Tarieven teksten</h1>
+          <p class="admin-subtitle">Bewerk de teksten in de prijssectie voor NL en EN</p>
+
+          <!-- Language selector -->
+          <div class="admin-actions" style="margin-bottom: var(--space-8);">
+            <div class="admin-filters">
+              <button class="filter-btn active" data-pricing-lang="nl">Nederlands</button>
+              <button class="filter-btn" data-pricing-lang="en">English</button>
+            </div>
+            <button id="savePricingBtn" class="btn btn-primary">Opslaan</button>
+          </div>
+
+          <form id="pricingForm">
+            <!-- Section -->
+            <div class="pricing-editor-section">
+              <h3 class="pricing-editor-heading">Sectie</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Label (klein boven titel)</label>
+                  <input type="text" class="form-input" data-pricing-key="label">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Titel</label>
+                  <input type="text" class="form-input" data-pricing-key="title">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Intro alinea 1</label>
+                <textarea class="form-textarea" rows="2" data-pricing-key="intro1"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Intro alinea 2</label>
+                <textarea class="form-textarea" rows="2" data-pricing-key="intro2"></textarea>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">CTA tekst</label>
+                  <input type="text" class="form-input" data-pricing-key="ctaText">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">CTA knop</label>
+                  <input type="text" class="form-input" data-pricing-key="ctaButton">
+                </div>
+              </div>
+            </div>
+
+            <!-- Package: Events -->
+            <div class="pricing-editor-section">
+              <h3 class="pricing-editor-heading">Pakket 1 — Events</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Type label</label>
+                  <input type="text" class="form-input" data-pricing-key="packages.events.type">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Titel</label>
+                  <input type="text" class="form-input" data-pricing-key="packages.events.title">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Doelgroep</label>
+                <input type="text" class="form-input" data-pricing-key="packages.events.target">
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Vanaf tekst</label>
+                  <input type="text" class="form-input" data-pricing-key="packages.events.from">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Prijs</label>
+                  <input type="text" class="form-input" data-pricing-key="packages.events.price">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Pitch</label>
+                <textarea class="form-textarea" rows="2" data-pricing-key="packages.events.pitch"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Item 1</label>
+                <input type="text" class="form-input" data-pricing-key="packages.events.item1">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Groep 1 label</label>
+                <input type="text" class="form-input" data-pricing-key="packages.events.group1">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Item 2</label>
+                <input type="text" class="form-input" data-pricing-key="packages.events.item2">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Groep 2 label</label>
+                <input type="text" class="form-input" data-pricing-key="packages.events.group2">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Item 3</label>
+                <input type="text" class="form-input" data-pricing-key="packages.events.item3">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Item 4</label>
+                <input type="text" class="form-input" data-pricing-key="packages.events.item4">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Tagline (onderaan kaart)</label>
+                <textarea class="form-textarea" rows="2" data-pricing-key="packages.events.tagline"></textarea>
+              </div>
+            </div>
+
+            <!-- Package: Athlete -->
+            <div class="pricing-editor-section">
+              <h3 class="pricing-editor-heading">Pakket 2 — Athlete</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Type label</label>
+                  <input type="text" class="form-input" data-pricing-key="packages.athlete.type">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Titel</label>
+                  <input type="text" class="form-input" data-pricing-key="packages.athlete.title">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Doelgroep</label>
+                <input type="text" class="form-input" data-pricing-key="packages.athlete.target">
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Vanaf tekst</label>
+                  <input type="text" class="form-input" data-pricing-key="packages.athlete.from">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Prijs</label>
+                  <input type="text" class="form-input" data-pricing-key="packages.athlete.price">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Pitch</label>
+                <textarea class="form-textarea" rows="2" data-pricing-key="packages.athlete.pitch"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Item 1</label>
+                <input type="text" class="form-input" data-pricing-key="packages.athlete.item1">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Item 2</label>
+                <input type="text" class="form-input" data-pricing-key="packages.athlete.item2">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Item 3</label>
+                <input type="text" class="form-input" data-pricing-key="packages.athlete.item3">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Tagline (onderaan kaart)</label>
+                <textarea class="form-textarea" rows="2" data-pricing-key="packages.athlete.tagline"></textarea>
+              </div>
+            </div>
+
+            <!-- Package: Social -->
+            <div class="pricing-editor-section">
+              <h3 class="pricing-editor-heading">Pakket 3 — Social content</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Type label</label>
+                  <input type="text" class="form-input" data-pricing-key="packages.social.type">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Titel</label>
+                  <input type="text" class="form-input" data-pricing-key="packages.social.title">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Doelgroep</label>
+                <input type="text" class="form-input" data-pricing-key="packages.social.target">
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Vanaf tekst</label>
+                  <input type="text" class="form-input" data-pricing-key="packages.social.from">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Prijs</label>
+                  <input type="text" class="form-input" data-pricing-key="packages.social.price">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Pitch</label>
+                <textarea class="form-textarea" rows="2" data-pricing-key="packages.social.pitch"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Item 1</label>
+                <input type="text" class="form-input" data-pricing-key="packages.social.item1">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Groep 1 label</label>
+                <input type="text" class="form-input" data-pricing-key="packages.social.group1">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Item 2</label>
+                <input type="text" class="form-input" data-pricing-key="packages.social.item2">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Groep 2 label</label>
+                <input type="text" class="form-input" data-pricing-key="packages.social.group2">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Item 3</label>
+                <input type="text" class="form-input" data-pricing-key="packages.social.item3">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Tagline (onderaan kaart)</label>
+                <textarea class="form-textarea" rows="2" data-pricing-key="packages.social.tagline"></textarea>
+              </div>
+            </div>
+          </form>
+        </div><!-- /tabPricing -->
+
       </main>
     </div>
 
