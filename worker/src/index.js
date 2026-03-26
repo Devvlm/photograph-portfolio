@@ -8,17 +8,55 @@ import { handlePortfolio } from './portfolio.js';
 import { handleUpload } from './upload.js';
 import { handlePricingText, handleAllTranslations } from './translations.js';
 
+/** Allowed origins — must match your production domain */
+const ALLOWED_ORIGINS = [
+  'https://dtrmndvisuals.com',
+  'https://www.dtrmndvisuals.com',
+  'http://localhost:5173',  // local dev
+  'http://localhost:4173',  // local preview
+];
+
 /**
- * CORS headers for all responses
+ * CORS headers — only reflects origin if it's in the allowlist
  */
 function corsHeaders(origin, env) {
-  const allowedOrigin = env.CORS_ORIGIN === '*' ? origin : env.CORS_ORIGIN;
+  const allowed = ALLOWED_ORIGINS.includes(origin)
+    ? origin
+    : ALLOWED_ORIGINS[0];
+
   return {
-    'Access-Control-Allow-Origin': allowedOrigin || '*',
+    'Access-Control-Allow-Origin': allowed,
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Max-Age': '86400',
+    'Vary': 'Origin',
   };
+}
+
+/**
+ * Security headers added to every response
+ */
+function securityHeaders() {
+  return {
+    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'X-XSS-Protection': '1; mode=block',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+  };
+}
+
+/**
+ * CSRF check — for mutating requests, Origin must be in the allowlist
+ */
+function validateOrigin(request) {
+  const method = request.method;
+  if (method === 'GET' || method === 'OPTIONS' || method === 'HEAD') return true;
+
+  const origin = request.headers.get('Origin');
+  if (!origin) return false; // reject if no Origin on mutations
+  return ALLOWED_ORIGINS.includes(origin);
 }
 
 /**
@@ -31,6 +69,7 @@ function jsonResponse(data, status = 200, env, request) {
     headers: {
       'Content-Type': 'application/json',
       ...corsHeaders(origin, env),
+      ...securityHeaders(),
     },
   });
 }
@@ -56,8 +95,16 @@ export default {
       const origin = request.headers.get('Origin');
       return new Response(null, {
         status: 204,
-        headers: corsHeaders(origin, env),
+        headers: {
+          ...corsHeaders(origin, env),
+          ...securityHeaders(),
+        },
       });
+    }
+
+    // CSRF: reject mutating requests from unknown origins
+    if (!validateOrigin(request)) {
+      return errorResponse('Forbidden: invalid origin', 403, env, request);
     }
 
     try {
@@ -91,8 +138,6 @@ export default {
         return jsonResponse({ status: 'ok', timestamp: new Date().toISOString() }, 200, env, request);
       }
 
-      // 404 for unknown routes
-      console.log('No route matched for path:', path);
       return errorResponse('Not found', 404, env, request);
 
     } catch (error) {

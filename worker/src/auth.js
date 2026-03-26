@@ -3,6 +3,50 @@
  * Handles password-only admin authentication with JWT tokens
  */
 
+const RATE_LIMIT_MAX = 5;        // max attempts
+const RATE_LIMIT_WINDOW_SEC = 60; // per 60 seconds
+
+/**
+ * Check if IP is rate limited. Returns { allowed, retryAfter? }
+ */
+async function checkRateLimit(ip, env) {
+  if (!env.TRANSLATIONS_KV) return { allowed: true };
+
+  const key = `ratelimit:login:${ip}`;
+  const data = await env.TRANSLATIONS_KV.get(key, 'json');
+
+  if (!data) return { allowed: true };
+
+  const windowExpired = Date.now() - data.firstAttempt > RATE_LIMIT_WINDOW_SEC * 1000;
+  if (windowExpired) return { allowed: true };
+  if (data.count >= RATE_LIMIT_MAX) {
+    const retryAfter = Math.ceil((data.firstAttempt + RATE_LIMIT_WINDOW_SEC * 1000 - Date.now()) / 1000);
+    return { allowed: false, retryAfter };
+  }
+  return { allowed: true };
+}
+
+/**
+ * Record a failed login attempt for the given IP
+ */
+async function recordFailedAttempt(ip, env) {
+  if (!env.TRANSLATIONS_KV) return;
+
+  const key = `ratelimit:login:${ip}`;
+  const existing = await env.TRANSLATIONS_KV.get(key, 'json');
+
+  const now = Date.now();
+  const windowExpired = existing && now - existing.firstAttempt > RATE_LIMIT_WINDOW_SEC * 1000;
+
+  const entry = (!existing || windowExpired)
+    ? { count: 1, firstAttempt: now }
+    : { count: existing.count + 1, firstAttempt: existing.firstAttempt };
+
+  await env.TRANSLATIONS_KV.put(key, JSON.stringify(entry), {
+    expirationTtl: RATE_LIMIT_WINDOW_SEC,
+  });
+}
+
 /**
  * Simple bcrypt-like password verification
  * Uses Web Crypto API for secure comparison
@@ -167,6 +211,20 @@ export async function handleAuth(
 
   // POST /api/auth/login - Login with password
   if (path === "/api/auth/login" && method === "POST") {
+    const ip = request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || 'unknown';
+
+    // Rate limit check
+    const rateLimit = await checkRateLimit(ip, env);
+    if (!rateLimit.allowed) {
+      return new Response(JSON.stringify({ error: 'Too many login attempts. Try again later.' }), {
+        status: 429,
+        headers: {
+          'Content-Type': 'application/json',
+          'Retry-After': String(rateLimit.retryAfter),
+        },
+      });
+    }
+
     try {
       const body = await request.json();
       const { password } = body;
@@ -183,6 +241,8 @@ export async function handleAuth(
       );
 
       if (!isValid) {
+        // Record failed attempt before responding
+        await recordFailedAttempt(ip, env);
         return errorResponse("Invalid password", 401, env, request);
       }
 
