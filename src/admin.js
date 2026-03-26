@@ -1006,7 +1006,7 @@ async function savePricingTranslations() {
         throw new Error(err.error || `Fout bij opslaan ${lang}`);
       }
     }
-    showToast('Tarieven teksten opgeslagen', 'success');
+    showToast('Prijzen teksten opgeslagen', 'success');
   } catch (e) {
     showToast('Opslaan mislukt: ' + e.message, 'error');
   } finally {
