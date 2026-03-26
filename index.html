@@ -67,6 +67,40 @@
     </div>
   </section>
 
+  <!-- Portfolio Section -->
+  <section class="portfolio section" id="portfolio">
+    <div class="container">
+      <h2 class="section-title" data-i18n-key="portfolio.title">My Work</h2>
+      <p class="section-subtitle" data-i18n-key="portfolio.subtitle">A curated selection of my best projects</p>
+
+      <!-- Filter Buttons -->
+      <div class="portfolio-filters">
+        <button class="filter-btn active" data-filter="all" data-i18n-key="portfolio.filters.all">All</button>
+        <button class="filter-btn" data-filter="photo" data-i18n-key="portfolio.filters.photography">Photography</button>
+        <button class="filter-btn" data-filter="video" data-i18n-key="portfolio.filters.video">Video</button>
+        <button class="filter-btn" data-filter="editing" data-i18n-key="portfolio.filters.editing">Editing</button>
+      </div>
+
+      <!-- Portfolio Grid -->
+      <div class="portfolio-grid" id="portfolioGrid">
+        <!-- Items will be injected by JavaScript -->
+      </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+      <button class="lightbox-close" id="lightboxClose">&times;</button>
+      <button class="lightbox-nav lightbox-prev" id="lightboxPrev">&#8249;</button>
+      <button class="lightbox-nav lightbox-next" id="lightboxNext">&#8250;</button>
+      <div class="lightbox-content" id="lightboxContent">
+        <!-- Content injected by JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section class="pricing section" id="pricing"></section>
+
   <!-- About Section -->
   <section class="about section" id="about">
     <div class="container">
@@ -125,40 +159,6 @@
       </div>
     </div>
   </section>
-
-  <!-- Portfolio Section -->
-  <section class="portfolio section" id="portfolio">
-    <div class="container">
-      <h2 class="section-title" data-i18n-key="portfolio.title">My Work</h2>
-      <p class="section-subtitle" data-i18n-key="portfolio.subtitle">A curated selection of my best projects</p>
-
-      <!-- Filter Buttons -->
-      <div class="portfolio-filters">
-        <button class="filter-btn active" data-filter="all" data-i18n-key="portfolio.filters.all">All</button>
-        <button class="filter-btn" data-filter="photo" data-i18n-key="portfolio.filters.photography">Photography</button>
-        <button class="filter-btn" data-filter="video" data-i18n-key="portfolio.filters.video">Video</button>
-        <button class="filter-btn" data-filter="editing" data-i18n-key="portfolio.filters.editing">Editing</button>
-      </div>
-
-      <!-- Portfolio Grid -->
-      <div class="portfolio-grid" id="portfolioGrid">
-        <!-- Items will be injected by JavaScript -->
-      </div>
-    </div>
-
-    <!-- Lightbox -->
-    <div class="lightbox" id="lightbox">
-      <button class="lightbox-close" id="lightboxClose">&times;</button>
-      <button class="lightbox-nav lightbox-prev" id="lightboxPrev">&#8249;</button>
-      <button class="lightbox-nav lightbox-next" id="lightboxNext">&#8250;</button>
-      <div class="lightbox-content" id="lightboxContent">
-        <!-- Content injected by JavaScript -->
-      </div>
-    </div>
-  </section>
-
-  <!-- Pricing Section -->
-  <section class="pricing section" id="pricing"></section>
 
   <!-- Contact Section -->
   <section class="contact section" id="contact">
@@ -275,8 +275,9 @@
 
         <nav class="footer-links">
           <a href="#hero" class="footer-link" data-i18n-key="nav.home">Home</a>
-          <a href="#about" class="footer-link" data-i18n-key="nav.about">About</a>
           <a href="#portfolio" class="footer-link" data-i18n-key="nav.portfolio">Portfolio</a>
+          <a href="#pricing" class="footer-link">Prijzen</a>
+          <a href="#about" class="footer-link" data-i18n-key="nav.about">About</a>
           <a href="#contact" class="footer-link" data-i18n-key="nav.contact">Contact</a>
         </nav>
 
