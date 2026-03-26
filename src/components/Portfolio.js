@@ -9,14 +9,12 @@ import { portfolioService } from '../lib/database.js';
 
 export async function initPortfolio() {
   const grid = document.getElementById('portfolioGrid');
-  const filters = document.querySelectorAll('.filter-btn');
   const lightbox = document.getElementById('lightbox');
   const lightboxContent = document.getElementById('lightboxContent');
   const lightboxClose = document.getElementById('lightboxClose');
   const lightboxPrev = document.getElementById('lightboxPrev');
   const lightboxNext = document.getElementById('lightboxNext');
 
-  let currentFilter = 'all';
   let currentIndex = 0;
   let portfolioItems = [];
   let filteredItems = [];
@@ -51,9 +49,7 @@ export async function initPortfolio() {
 
   // Render portfolio items
   function renderItems() {
-    filteredItems = currentFilter === 'all'
-      ? [...portfolioItems]
-      : portfolioItems.filter(item => item.category === currentFilter);
+    filteredItems = [...portfolioItems];
 
     grid.innerHTML = filteredItems.map((item, index) => `
       <div class="portfolio-item" data-index="${index}" data-type="${item.type}">
@@ -84,21 +80,6 @@ export async function initPortfolio() {
         item.style.transform = 'translateY(0)';
       }, i * 100);
     });
-  }
-
-  // Filter handling
-  function handleFilter(e) {
-    const btn = e.currentTarget;
-    const filter = btn.dataset.filter;
-
-    if (filter === currentFilter) return;
-
-    // Update active state
-    filters.forEach(f => f.classList.remove('active'));
-    btn.classList.add('active');
-
-    currentFilter = filter;
-    renderItems();
   }
 
   // Lightbox functions
@@ -177,10 +158,6 @@ export async function initPortfolio() {
   }
 
   // Event listeners
-  filters.forEach(btn => {
-    btn.addEventListener('click', handleFilter);
-  });
-
   if (lightboxClose) {
     lightboxClose.addEventListener('click', closeLightbox);
   }
