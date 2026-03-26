@@ -474,23 +474,12 @@
             <input type="text" id="itemTitle" class="form-input" placeholder="Project title" required>
           </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="itemCategory">Category *</label>
-              <select id="itemCategory" class="form-input" required>
-                <option value="photo">Photography</option>
-                <option value="video">Video</option>
-                <option value="editing">Editing</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="itemType">Type *</label>
-              <select id="itemType" class="form-input" required>
-                <option value="image">Image</option>
-                <option value="video">Video</option>
-              </select>
-            </div>
+          <div class="form-group">
+            <label class="form-label" for="itemType">Type *</label>
+            <select id="itemType" class="form-input" required>
+              <option value="image">Image</option>
+              <option value="video">Video</option>
+            </select>
           </div>
 
           <!-- Image Upload Section (shown when Type = Image) -->
@@ -530,13 +519,37 @@
           <!-- Thumbnail for Video (shown when Type = Video) -->
           <div class="form-group" id="videoThumbnailGroup" style="display: none;">
             <label class="form-label">Video Thumbnail *</label>
-            <div id="videoThumbnailUpload" class="file-upload">
-              <div class="file-upload-icon">🖼️</div>
-              <p class="file-upload-text">Click or drag to upload thumbnail</p>
-              <p class="file-upload-hint">Recommended: 1920x1080px, max 10MB</p>
-              <input type="file" id="videoThumbnailFile" accept="image/*">
+            <p id="thumbnailError" class="field-error" style="display:none;">Voeg een thumbnail toe voor je opslaat.</p>
+
+            <!-- Source toggle (shown after video is selected) -->
+            <div id="thumbnailSourceTabs" class="thumb-source-tabs" style="display:none;">
+              <button type="button" class="thumb-source-btn active" data-thumb-source="upload">Upload afbeelding</button>
+              <button type="button" class="thumb-source-btn" data-thumb-source="frame">Frame uit video</button>
             </div>
-            <div id="videoThumbnailCropperContainer" class="cropper-container" style="display: none;"></div>
+
+            <!-- Upload option -->
+            <div id="thumbUploadSection">
+              <div id="videoThumbnailUpload" class="file-upload">
+                <div class="file-upload-icon">🖼️</div>
+                <p class="file-upload-text">Click or drag to upload thumbnail</p>
+                <p class="file-upload-hint">Recommended: 1920x1080px, max 10MB</p>
+                <input type="file" id="videoThumbnailFile" accept="image/*">
+              </div>
+              <div id="videoThumbnailCropperContainer" class="cropper-container" style="display: none;"></div>
+            </div>
+
+            <!-- Frame picker option -->
+            <div id="framePickerSection" style="display:none;">
+              <div class="frame-picker">
+                <video id="framePickerVideo" class="frame-picker-video" preload="metadata" controls></video>
+                <div class="frame-picker-actions">
+                  <span class="frame-picker-hint">Scrol door de video en kies een frame.</span>
+                  <button type="button" class="btn btn-primary btn-sm" id="captureFrameBtn">Gebruik dit frame</button>
+                </div>
+              </div>
+              <div id="frameCropperContainer" class="cropper-container" style="display: none;"></div>
+            </div>
+
             <input type="hidden" id="videoThumbnailUrl">
             <input type="hidden" id="videoFullsizeUrl">
           </div>

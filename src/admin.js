@@ -58,6 +58,16 @@ const videoThumbnailUpload = document.getElementById('videoThumbnailUpload');
 const videoThumbnailFile = document.getElementById('videoThumbnailFile');
 const videoThumbnailCropperContainer = document.getElementById('videoThumbnailCropperContainer');
 
+// Frame picker elements
+const thumbnailSourceTabs = document.getElementById('thumbnailSourceTabs');
+const thumbUploadSection   = document.getElementById('thumbUploadSection');
+const framePickerSection   = document.getElementById('framePickerSection');
+const framePickerVideo     = document.getElementById('framePickerVideo');
+const captureFrameBtn      = document.getElementById('captureFrameBtn');
+const frameCropperContainer = document.getElementById('frameCropperContainer');
+let frameCropper = null;
+let framePickerBlobUrl = null;
+
 // Type selector
 const itemType = document.getElementById('itemType');
 
@@ -112,6 +122,7 @@ function setupEventListeners() {
   // Video upload handlers
   setupVideoUpload();
   setupVideoThumbnailUpload();
+  setupThumbnailSourceTabs();
 
   // Delete confirmation
   confirmDeleteBtn.addEventListener('click', handleDeleteConfirm);
@@ -336,6 +347,78 @@ async function handleVideoSelect(file) {
       <button type="button" class="btn btn-outline btn-sm" onclick="window.resetVideoUpload()">Verander video</button>
     </div>
   `;
+
+  // Enable frame picker: load video as blob URL for seeking
+  if (framePickerBlobUrl) URL.revokeObjectURL(framePickerBlobUrl);
+  framePickerBlobUrl = URL.createObjectURL(file);
+  framePickerVideo.src = framePickerBlobUrl;
+
+  // Show the source toggle tabs
+  thumbnailSourceTabs.style.display = 'flex';
+}
+
+/**
+ * Switch between thumbnail source options (upload / frame picker)
+ */
+function setupThumbnailSourceTabs() {
+  document.querySelectorAll('[data-thumb-source]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-thumb-source]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      if (btn.dataset.thumbSource === 'frame') {
+        thumbUploadSection.style.display = 'none';
+        framePickerSection.style.display = 'block';
+      } else {
+        framePickerSection.style.display = 'none';
+        thumbUploadSection.style.display = 'block';
+      }
+    });
+  });
+
+  captureFrameBtn.addEventListener('click', captureVideoFrame);
+}
+
+/**
+ * Capture the current video frame and load it into the cropper
+ */
+async function captureVideoFrame() {
+  if (!framePickerVideo.src || framePickerVideo.readyState === 0) {
+    showToast('Video nog niet geladen', 'error');
+    return;
+  }
+
+  // Draw the current frame onto a canvas
+  const canvas = document.createElement('canvas');
+  canvas.width  = framePickerVideo.videoWidth  || 1920;
+  canvas.height = framePickerVideo.videoHeight || 1080;
+  canvas.getContext('2d').drawImage(framePickerVideo, 0, 0, canvas.width, canvas.height);
+
+  const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+
+  // Convert to a File so it can be uploaded as fullsize too
+  const blob = await (await fetch(dataUrl)).blob();
+  currentVideoThumbnailFile = new File([blob], 'frame.jpg', { type: 'image/jpeg' });
+
+  // Show cropper below the frame picker
+  frameCropperContainer.style.display = 'block';
+  captureFrameBtn.textContent = 'Frame opnieuw kiezen';
+
+  if (frameCropper) frameCropper.destroy();
+  frameCropper = new ImageCropper(frameCropperContainer, {
+    aspectRatio: 4 / 3,
+    outputWidth: 600,
+    outputHeight: 450,
+  });
+
+  try {
+    await frameCropper.setImage(dataUrl);
+    // Point videoThumbnailCropper at the frame cropper so handleSaveItem picks it up
+    videoThumbnailCropper = frameCropper;
+    hideThumbnailError();
+  } catch (err) {
+    showToast('Frame laden mislukt', 'error');
+  }
 }
 
 /**
@@ -357,6 +440,7 @@ async function handleVideoThumbnailSelect(file) {
 
   // Store the file for later upload
   currentVideoThumbnailFile = file;
+  hideThumbnailError();
 
   // Read image and show cropper
   const reader = new FileReader();
@@ -416,6 +500,9 @@ function resetVideoUpload() {
   document.getElementById('videoFileUrl').value = '';
   currentVideoFile = null;
   videoFile.value = '';
+  if (framePickerBlobUrl) { URL.revokeObjectURL(framePickerBlobUrl); framePickerBlobUrl = null; }
+  framePickerVideo.src = '';
+  thumbnailSourceTabs.style.display = 'none';
 }
 window.resetVideoUpload = resetVideoUpload;
 
@@ -434,8 +521,33 @@ function resetVideoThumbnailUpload() {
     videoThumbnailCropper = null;
   }
   videoThumbnailFile.value = '';
+
+  // Reset frame picker
+  if (frameCropper) { frameCropper.destroy(); frameCropper = null; }
+  frameCropperContainer.style.display = 'none';
+  frameCropperContainer.innerHTML = '';
+  framePickerSection.style.display = 'none';
+  thumbUploadSection.style.display = 'block';
+  thumbnailSourceTabs.style.display = 'none';
+  document.querySelectorAll('[data-thumb-source]').forEach(b => b.classList.toggle('active', b.dataset.thumbSource === 'upload'));
+  captureFrameBtn.textContent = 'Gebruik dit frame';
+  hideThumbnailError();
 }
 window.resetVideoThumbnailUpload = resetVideoThumbnailUpload;
+
+/** Show / hide thumbnail required error */
+function showThumbnailError() {
+  const el = document.getElementById('thumbnailError');
+  if (el) el.style.display = 'block';
+  const group = document.getElementById('videoThumbnailGroup');
+  if (group) group.classList.add('has-error');
+}
+function hideThumbnailError() {
+  const el = document.getElementById('thumbnailError');
+  if (el) el.style.display = 'none';
+  const group = document.getElementById('videoThumbnailGroup');
+  if (group) group.classList.remove('has-error');
+}
 
 /**
  * Handle login form submission
@@ -506,7 +618,6 @@ function renderPortfolioGrid() {
     <div class="admin-card" data-id="${item.id}">
       <div class="admin-card-image">
         <img src="${item.thumbnail_url}" alt="${item.title}" loading="lazy">
-        <span class="admin-card-badge ${item.category}">${item.category}</span>
         ${item.type === 'video' ? '<span class="admin-card-video-icon">▶</span>' : ''}
       </div>
       <div class="admin-card-content">
@@ -559,7 +670,6 @@ function openModal(item = null) {
   if (item) {
     document.getElementById('itemId').value = item.id;
     document.getElementById('itemTitle').value = item.title;
-    document.getElementById('itemCategory').value = item.category;
     document.getElementById('itemType').value = item.type;
     document.getElementById('itemDescription').value = item.description || '';
 
@@ -732,7 +842,8 @@ async function handleSaveItem(e) {
 
     // Validate that we have required files
     if (!thumbnailUrl || !fullsizeUrl) {
-      showToast('Please upload a thumbnail image', 'error');
+      showThumbnailError();
+      showToast('Voeg een thumbnail toe voor je opslaat.', 'error');
       return;
     }
     if (!videoUrl) {
@@ -743,7 +854,7 @@ async function handleSaveItem(e) {
 
   const itemData = {
     title: document.getElementById('itemTitle').value,
-    category: document.getElementById('itemCategory').value,
+    category: 'general',
     type: type,
     thumbnail_url: thumbnailUrl,
     fullsize_url: fullsizeUrl,
