@@ -10,12 +10,14 @@ import './styles/about.css';
 import './styles/portfolio.css';
 import './styles/contact.css';
 import './styles/navigation.css';
+import './styles/pricing.css';
 
 // Import components
 import { initNavigation } from './components/Navigation.js';
 import { initHero } from './components/Hero.js';
 import { initPortfolio } from './components/Portfolio.js';
 import { initContact } from './components/Contact.js';
+import { initPricing } from './components/Pricing.js';
 
 // Import i18n
 import { I18n } from './lib/i18n.js';
@@ -55,6 +57,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Initialize contact form
   initContact();
 
+  // Initialize pricing section
+  initPricing();
+
   // Initialize 3D hero section (async, may take time)
   await initHero();
 
@@ -83,8 +88,8 @@ function initScrollAnimations() {
     });
   }, observerOptions);
 
-  // Observe sections
-  const sections = document.querySelectorAll('.section');
+  // Observe sections (skip pricing — it manages its own card animations)
+  const sections = document.querySelectorAll('.section:not(.pricing)');
   sections.forEach(section => {
     section.style.opacity = '0';
     observer.observe(section);
