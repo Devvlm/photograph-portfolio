@@ -94,14 +94,9 @@ export async function handlePortfolio(request, env, { jsonResponse, errorRespons
       const body = await request.json();
 
       // Validate required fields
-      const { title, category, type, thumbnail_url, fullsize_url } = body;
-      if (!title || !category || !type || !thumbnail_url || !fullsize_url) {
+      const { title, type, thumbnail_url, fullsize_url } = body;
+      if (!title || !type || !thumbnail_url || !fullsize_url) {
         return errorResponse('Missing required fields', 400, env, request);
-      }
-
-      // Validate category
-      if (!['photo', 'video', 'editing'].includes(category)) {
-        return errorResponse('Invalid category', 400, env, request);
       }
 
       // Validate type
@@ -157,10 +152,6 @@ export async function handlePortfolio(request, env, { jsonResponse, errorRespons
       }
 
       // Validate category if provided
-      if (body.category && !['photo', 'video', 'editing'].includes(body.category)) {
-        return errorResponse('Invalid category', 400, env, request);
-      }
-
       // Validate type if provided
       if (body.type && !['image', 'video'].includes(body.type)) {
         return errorResponse('Invalid type', 400, env, request);
