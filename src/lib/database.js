@@ -163,7 +163,7 @@ export const storageService = {
     }
 
     const data = await response.json();
-    return data.url;
+    return data.url.startsWith('/') ? `${API_BASE}${data.url}` : data.url;
   },
 
   /**
@@ -234,7 +234,7 @@ export const storageService = {
 
       const data = await completeRes.json();
       if (onProgress) onProgress(100);
-      return data.url;
+      return data.url.startsWith('/') ? `${API_BASE}${data.url}` : data.url;
 
     } catch (error) {
       // Abort the multipart upload to clean up R2
