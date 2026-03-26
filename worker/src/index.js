@@ -6,7 +6,7 @@
 import { handleAuth } from './auth.js';
 import { handlePortfolio } from './portfolio.js';
 import { handleUpload } from './upload.js';
-import { handlePricingText } from './translations.js';
+import { handlePricingText, handleAllTranslations } from './translations.js';
 
 /**
  * CORS headers for all responses
@@ -74,6 +74,11 @@ export default {
       // Route: /api/pricing-text/*
       if (path.startsWith('/api/pricing-text')) {
         return await handlePricingText(request, env, { jsonResponse, errorResponse });
+      }
+
+      // Route: /api/translations/*
+      if (path.startsWith('/api/translations')) {
+        return await handleAllTranslations(request, env, { jsonResponse, errorResponse });
       }
 
       // Route: /api/upload/*

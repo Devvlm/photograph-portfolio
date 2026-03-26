@@ -1018,24 +1018,11 @@ async function savePricingTranslations() {
  * Set up pricing tab UI
  */
 function setupPricingEditor() {
-  // Tab switching
-  document.querySelectorAll('.admin-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      const target = tab.dataset.tab;
-      document.getElementById('tabPortfolio').style.display = target === 'portfolio' ? '' : 'none';
-      document.getElementById('tabPricing').style.display = target === 'pricing' ? '' : 'none';
-      if (target === 'pricing') loadPricingTranslations();
-    });
-  });
-
+  // Tab switching — handled centrally in setupTranslationsEditor
   // Language switching within pricing tab
   document.querySelectorAll('[data-pricing-lang]').forEach(btn => {
     btn.addEventListener('click', () => {
-      // Save current form state before switching
       readPricingForm(activePricingLang);
-      // Switch language
       activePricingLang = btn.dataset.pricingLang;
       document.querySelectorAll('[data-pricing-lang]').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
@@ -1043,10 +1030,142 @@ function setupPricingEditor() {
     });
   });
 
-  // Save button
   document.getElementById('savePricingBtn').addEventListener('click', savePricingTranslations);
+}
+
+/* ===================================
+   Translations Editor (all sections)
+   =================================== */
+
+let activeTransLang = 'nl';
+const transData = { nl: {}, en: {} };
+
+function getTransValue(obj, dotKey) {
+  return dotKey.split('.').reduce((cur, k) => (cur && cur[k] !== undefined ? cur[k] : ''), obj);
+}
+
+function setTransValue(obj, dotKey, value) {
+  const keys = dotKey.split('.');
+  let cur = obj;
+  for (let i = 0; i < keys.length - 1; i++) {
+    if (!cur[keys[i]] || typeof cur[keys[i]] !== 'object') cur[keys[i]] = {};
+    cur = cur[keys[i]];
+  }
+  cur[keys[keys.length - 1]] = value;
+}
+
+function populateTransForm(lang) {
+  const data = transData[lang] || {};
+  document.querySelectorAll('[data-trans-key]').forEach(el => {
+    el.value = getTransValue(data, el.dataset.transKey) || '';
+  });
+}
+
+function readTransForm(lang) {
+  if (!transData[lang]) transData[lang] = {};
+  document.querySelectorAll('[data-trans-key]').forEach(el => {
+    setTransValue(transData[lang], el.dataset.transKey, el.value);
+  });
+}
+
+async function loadAllTranslations() {
+  for (const lang of ['nl', 'en']) {
+    try {
+      const staticRes = await fetch(`/translations/${lang}.json`);
+      if (staticRes.ok) {
+        const staticData = await staticRes.json();
+        // Store all sections except pricing (handled by pricing editor)
+        const { pricing: _p, ...rest } = staticData;
+        transData[lang] = rest;
+      }
+      if (API_BASE) {
+        const apiRes = await fetch(`${API_BASE}/api/translations/${lang}`);
+        if (apiRes.ok) {
+          const overrides = await apiRes.json();
+          if (overrides && Object.keys(overrides).length > 0) {
+            deepMergeInto(transData[lang], overrides);
+          }
+        }
+      }
+    } catch (e) {
+      console.error(`Failed to load translations for ${lang}:`, e);
+    }
+  }
+  populateTransForm(activeTransLang);
+}
+
+async function saveAllTranslations() {
+  readTransForm(activeTransLang);
+
+  if (!API_BASE) {
+    showToast('API niet geconfigureerd', 'error');
+    return;
+  }
+  const token = authService.getToken();
+  if (!token) { showToast('Niet ingelogd', 'error'); return; }
+
+  showLoading('Opslaan...');
+  try {
+    for (const lang of ['nl', 'en']) {
+      const res = await fetch(`${API_BASE}/api/translations/${lang}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(transData[lang]),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `Fout bij opslaan ${lang}`);
+      }
+    }
+    showToast('Vertalingen opgeslagen', 'success');
+  } catch (e) {
+    showToast('Opslaan mislukt: ' + e.message, 'error');
+  } finally {
+    hideLoading();
+  }
+}
+
+/**
+ * Central tab switching + setup for all editors
+ */
+function setupAdminTabs() {
+  const tabs = {
+    portfolio: document.getElementById('tabPortfolio'),
+    pricing: document.getElementById('tabPricing'),
+    translations: document.getElementById('tabTranslations'),
+  };
+
+  document.querySelectorAll('.admin-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const target = tab.dataset.tab;
+      Object.entries(tabs).forEach(([key, el]) => {
+        if (el) el.style.display = key === target ? '' : 'none';
+      });
+      if (target === 'pricing') loadPricingTranslations();
+      if (target === 'translations') loadAllTranslations();
+    });
+  });
+
+  // Translations language switcher
+  document.querySelectorAll('[data-trans-lang]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      readTransForm(activeTransLang);
+      activeTransLang = btn.dataset.transLang;
+      document.querySelectorAll('[data-trans-lang]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      populateTransForm(activeTransLang);
+    });
+  });
+
+  document.getElementById('saveTranslationsBtn').addEventListener('click', saveAllTranslations);
 }
 
 // Initialize
 init();
 setupPricingEditor();
+setupAdminTabs();

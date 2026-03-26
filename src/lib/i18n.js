@@ -69,17 +69,27 @@ export class I18n {
       }
       const staticTranslations = await response.json();
 
-      // Try to load pricing overrides from the worker KV
+      // Try to load overrides from the worker KV (pricing + all other sections)
       if (API_BASE) {
         try {
-          const overridesRes = await fetch(`${API_BASE}/api/pricing-text/${lang}`);
-          if (overridesRes.ok) {
-            const overrides = await overridesRes.json();
+          const [pricingRes, translationsRes] = await Promise.all([
+            fetch(`${API_BASE}/api/pricing-text/${lang}`),
+            fetch(`${API_BASE}/api/translations/${lang}`),
+          ]);
+
+          if (pricingRes.ok) {
+            const overrides = await pricingRes.json();
             if (overrides && Object.keys(overrides).length > 0) {
-              staticTranslations.pricing = deepMerge(
-                staticTranslations.pricing || {},
-                overrides
-              );
+              staticTranslations.pricing = deepMerge(staticTranslations.pricing || {}, overrides);
+            }
+          }
+
+          if (translationsRes.ok) {
+            const overrides = await translationsRes.json();
+            if (overrides && Object.keys(overrides).length > 0) {
+              for (const section of Object.keys(overrides)) {
+                staticTranslations[section] = deepMerge(staticTranslations[section] || {}, overrides[section]);
+              }
             }
           }
         } catch (_) {

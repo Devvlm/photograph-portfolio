@@ -55,6 +55,7 @@
         <div class="admin-tabs">
           <button class="admin-tab active" data-tab="portfolio">Portfolio Items</button>
           <button class="admin-tab" data-tab="pricing">Prijzen teksten</button>
+          <button class="admin-tab" data-tab="translations">Vertalingen</button>
         </div>
 
         <!-- Portfolio Tab -->
@@ -303,6 +304,199 @@
             </div>
           </form>
         </div><!-- /tabPricing -->
+
+        <!-- Translations Tab -->
+        <div id="tabTranslations" class="admin-tab-panel" style="display:none;">
+          <h1 class="admin-title">Vertalingen</h1>
+          <p class="admin-subtitle">Bewerk alle teksten op de website voor NL en EN</p>
+
+          <!-- Language selector -->
+          <div class="admin-actions" style="margin-bottom: var(--space-8);">
+            <div class="admin-filters">
+              <button class="filter-btn active" data-trans-lang="nl">Nederlands</button>
+              <button class="filter-btn" data-trans-lang="en">English</button>
+            </div>
+            <button id="saveTranslationsBtn" class="btn btn-primary">Opslaan</button>
+          </div>
+
+          <form id="translationsForm">
+
+            <!-- Nav -->
+            <div class="pricing-editor-section">
+              <h3 class="pricing-editor-heading">Navigatie</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Home</label>
+                  <input type="text" class="form-input" data-trans-key="nav.home">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Portfolio</label>
+                  <input type="text" class="form-input" data-trans-key="nav.portfolio">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Over mij</label>
+                  <input type="text" class="form-input" data-trans-key="nav.about">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Contact</label>
+                  <input type="text" class="form-input" data-trans-key="nav.contact">
+                </div>
+              </div>
+            </div>
+
+            <!-- Hero -->
+            <div class="pricing-editor-section">
+              <h3 class="pricing-editor-heading">Hero sectie</h3>
+              <div class="form-group">
+                <label class="form-label">Titel</label>
+                <input type="text" class="form-input" data-trans-key="hero.title">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Subtitel</label>
+                <input type="text" class="form-input" data-trans-key="hero.subtitle">
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Knop: Bekijk werk</label>
+                  <input type="text" class="form-input" data-trans-key="hero.viewWork">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Knop: Neem contact op</label>
+                  <input type="text" class="form-input" data-trans-key="hero.getInTouch">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Knop: Prijzen</label>
+                  <input type="text" class="form-input" data-trans-key="hero.pricing">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Scroll tekst</label>
+                  <input type="text" class="form-input" data-trans-key="hero.scroll">
+                </div>
+              </div>
+            </div>
+
+            <!-- About -->
+            <div class="pricing-editor-section">
+              <h3 class="pricing-editor-heading">Over mij sectie</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Label (klein boven titel)</label>
+                  <input type="text" class="form-input" data-trans-key="about.label">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Titel</label>
+                  <input type="text" class="form-input" data-trans-key="about.title">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Tekst alinea 1</label>
+                <textarea class="form-textarea" rows="3" data-trans-key="about.text1"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Tekst alinea 2</label>
+                <textarea class="form-textarea" rows="3" data-trans-key="about.text2"></textarea>
+              </div>
+            </div>
+
+            <!-- Portfolio -->
+            <div class="pricing-editor-section">
+              <h3 class="pricing-editor-heading">Portfolio sectie</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Titel</label>
+                  <input type="text" class="form-input" data-trans-key="portfolio.title">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Subtitel</label>
+                  <input type="text" class="form-input" data-trans-key="portfolio.subtitle">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Filter: Alles</label>
+                  <input type="text" class="form-input" data-trans-key="portfolio.filters.all">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Filter: Fotografie</label>
+                  <input type="text" class="form-input" data-trans-key="portfolio.filters.photography">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Filter: Video</label>
+                  <input type="text" class="form-input" data-trans-key="portfolio.filters.video">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Filter: Bewerking</label>
+                  <input type="text" class="form-input" data-trans-key="portfolio.filters.editing">
+                </div>
+              </div>
+            </div>
+
+            <!-- Contact -->
+            <div class="pricing-editor-section">
+              <h3 class="pricing-editor-heading">Contact sectie</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Label (klein boven titel)</label>
+                  <input type="text" class="form-input" data-trans-key="contact.label">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Titel</label>
+                  <input type="text" class="form-input" data-trans-key="contact.title">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Tekst</label>
+                <textarea class="form-textarea" rows="3" data-trans-key="contact.text"></textarea>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Formulier: Naam</label>
+                  <input type="text" class="form-input" data-trans-key="contact.form.name">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Formulier: E-mail</label>
+                  <input type="text" class="form-input" data-trans-key="contact.form.email">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Formulier: Onderwerp</label>
+                  <input type="text" class="form-input" data-trans-key="contact.form.subject">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Formulier: Bericht</label>
+                  <input type="text" class="form-input" data-trans-key="contact.form.message">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Knop: Verstuur</label>
+                  <input type="text" class="form-input" data-trans-key="contact.form.send">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Succes melding</label>
+                  <input type="text" class="form-input" data-trans-key="contact.form.success">
+                </div>
+              </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="pricing-editor-section">
+              <h3 class="pricing-editor-heading">Footer</h3>
+              <div class="form-group">
+                <label class="form-label">Copyright tekst</label>
+                <input type="text" class="form-input" data-trans-key="footer.copyright">
+              </div>
+            </div>
+
+          </form>
+        </div><!-- /tabTranslations -->
 
       </main>
     </div>
