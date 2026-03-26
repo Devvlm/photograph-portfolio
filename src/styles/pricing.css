@@ -46,10 +46,6 @@
   margin-bottom: var(--space-4);
 }
 
-.pricing-intro-text + .pricing-intro-text {
-  color: var(--text-muted);
-  font-size: var(--text-sm);
-}
 
 /* Cards Grid */
 .pricing-grid {
