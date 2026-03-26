@@ -6,3 +6,7 @@ test_screenshots/
 *.pyc
 __pycache__/
 worker.zip
+.env.production
+worker/.dev.vars
+worker/.wrangler/
+.claude/settings.local.json
