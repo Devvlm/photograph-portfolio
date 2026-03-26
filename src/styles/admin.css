@@ -752,6 +752,33 @@
   flex-shrink: 0;
 }
 
+/* Upload Progress Bar */
+.upload-progress {
+  margin-top: var(--space-3);
+}
+
+.upload-progress-bar {
+  background: #2a2a2a;
+  border-radius: 4px;
+  height: 6px;
+  overflow: hidden;
+  margin-bottom: var(--space-2);
+}
+
+.upload-progress-fill {
+  background: var(--accent-primary);
+  height: 100%;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+.upload-progress-text {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  text-align: center;
+  margin: 0;
+}
+
 .btn-remove {
   background: rgba(244, 67, 54, 0.1);
   border: 1px solid rgba(244, 67, 54, 0.3);

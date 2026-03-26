@@ -683,15 +683,26 @@ async function handleSaveItem(e) {
     fullsizeUrl = document.getElementById('videoFullsizeUrl').value;
     videoUrl = document.getElementById('videoFileUrl').value;
 
-    // Upload new video if selected
+    // Upload new video if selected (chunked multipart for any size)
     if (currentVideoFile) {
+      const progressEl  = document.getElementById('uploadProgress');
+      const progressFill = document.getElementById('uploadProgressFill');
+      const progressText = document.getElementById('uploadProgressText');
+
       try {
-        showLoading('Uploading video... This may take a while for large files.');
-        videoUrl = await storageService.uploadFile(currentVideoFile, 'videos');
-        hideLoading();
+        progressEl.style.display = 'block';
+        videoUrl = await storageService.uploadLargeFile(
+          currentVideoFile,
+          'videos',
+          (pct) => {
+            progressFill.style.width = pct + '%';
+            progressText.textContent = `Video uploaden... ${pct}%`;
+          }
+        );
+        progressEl.style.display = 'none';
       } catch (error) {
-        hideLoading();
-        showToast('Failed to upload video: ' + error.message, 'error');
+        progressEl.style.display = 'none';
+        showToast('Video upload mislukt: ' + error.message, 'error');
         return;
       }
     }

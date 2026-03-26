@@ -1,6 +1,7 @@
 /**
  * Upload Module
  * Handles file uploads to Cloudflare R2
+ * Supports single-shot uploads (images) and multipart chunked uploads (large videos)
  */
 
 import { requireAuth } from './auth.js';
@@ -107,8 +108,8 @@ export async function handleUpload(request, env, { jsonResponse, errorResponse }
     }
   }
 
-  // DELETE /api/upload/:key - Delete a file
-  if (path.startsWith('/api/upload/') && method === 'DELETE') {
+  // DELETE /api/upload/:key - Delete a file (must not match multipart routes)
+  if (path.startsWith('/api/upload/') && !path.startsWith('/api/upload/multipart') && method === 'DELETE') {
     const user = await requireAuth(request, env);
     if (!user) {
       return errorResponse('Unauthorized', 401, env, request);
@@ -164,6 +165,106 @@ export async function handleUpload(request, env, { jsonResponse, errorResponse }
     } catch (error) {
       console.error('Media serve error:', error);
       return errorResponse('Failed to serve file', 500, env, request);
+    }
+  }
+
+  // POST /api/upload/multipart/start — initiate a multipart upload
+  if (path === '/api/upload/multipart/start' && method === 'POST') {
+    const user = await requireAuth(request, env);
+    if (!user) return errorResponse('Unauthorized', 401, env, request);
+
+    try {
+      const { folder, filename, contentType } = await request.json();
+
+      if (!filename || !contentType) {
+        return errorResponse('filename and contentType are required', 400, env, request);
+      }
+
+      if (!ALLOWED_VIDEO_TYPES.includes(contentType)) {
+        return errorResponse(`Invalid video type: ${contentType}`, 400, env, request);
+      }
+
+      const key = generateFilename(filename, folder || 'videos');
+      const upload = await env.PORTFOLIO_BUCKET.createMultipartUpload(key, {
+        httpMetadata: { contentType },
+      });
+
+      return jsonResponse({ uploadId: upload.uploadId, key }, 200, env, request);
+    } catch (error) {
+      console.error('Multipart start error:', error);
+      return errorResponse('Failed to start upload', 500, env, request);
+    }
+  }
+
+  // POST /api/upload/multipart/part — upload one chunk
+  if (path === '/api/upload/multipart/part' && method === 'POST') {
+    const user = await requireAuth(request, env);
+    if (!user) return errorResponse('Unauthorized', 401, env, request);
+
+    try {
+      const uploadId  = request.headers.get('X-Upload-Id');
+      const key       = request.headers.get('X-Upload-Key');
+      const partNum   = parseInt(request.headers.get('X-Part-Number') || '0', 10);
+
+      if (!uploadId || !key || !partNum || partNum < 1 || partNum > 10000) {
+        return errorResponse('Missing or invalid upload headers', 400, env, request);
+      }
+
+      const upload   = env.PORTFOLIO_BUCKET.resumeMultipartUpload(key, uploadId);
+      const uploaded = await upload.uploadPart(partNum, request.body);
+
+      return jsonResponse({ partNumber: uploaded.partNumber, etag: uploaded.etag }, 200, env, request);
+    } catch (error) {
+      console.error('Multipart part error:', error);
+      return errorResponse('Failed to upload part', 500, env, request);
+    }
+  }
+
+  // POST /api/upload/multipart/complete — finalise the upload
+  if (path === '/api/upload/multipart/complete' && method === 'POST') {
+    const user = await requireAuth(request, env);
+    if (!user) return errorResponse('Unauthorized', 401, env, request);
+
+    try {
+      const { uploadId, key, parts } = await request.json();
+
+      if (!uploadId || !key || !Array.isArray(parts) || parts.length === 0) {
+        return errorResponse('uploadId, key and parts are required', 400, env, request);
+      }
+
+      const upload = env.PORTFOLIO_BUCKET.resumeMultipartUpload(key, uploadId);
+      await upload.complete(parts);
+
+      return jsonResponse({
+        success: true,
+        url: getPublicUrl(key, env),
+        key,
+      }, 200, env, request);
+    } catch (error) {
+      console.error('Multipart complete error:', error);
+      return errorResponse('Failed to complete upload', 500, env, request);
+    }
+  }
+
+  // DELETE /api/upload/multipart/abort — abort on error
+  if (path === '/api/upload/multipart/abort' && method === 'DELETE') {
+    const user = await requireAuth(request, env);
+    if (!user) return errorResponse('Unauthorized', 401, env, request);
+
+    try {
+      const { uploadId, key } = await request.json();
+
+      if (!uploadId || !key) {
+        return errorResponse('uploadId and key are required', 400, env, request);
+      }
+
+      const upload = env.PORTFOLIO_BUCKET.resumeMultipartUpload(key, uploadId);
+      await upload.abort();
+
+      return jsonResponse({ success: true }, 200, env, request);
+    } catch (error) {
+      console.error('Multipart abort error:', error);
+      return errorResponse('Failed to abort upload', 500, env, request);
     }
   }
 

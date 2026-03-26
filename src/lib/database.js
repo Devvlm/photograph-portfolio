@@ -167,6 +167,87 @@ export const storageService = {
   },
 
   /**
+   * Upload a large file (video) to R2 via chunked multipart upload
+   * @param {File} file - The video file
+   * @param {string} folder - Target folder (default: 'videos')
+   * @param {function} onProgress - Callback(percentage: 0-100)
+   * @returns {Promise<string>} - Public URL of the uploaded file
+   */
+  async uploadLargeFile(file, folder = 'videos', onProgress = null) {
+    const CHUNK_SIZE = 10 * 1024 * 1024; // 10MB per part
+    const headers = authService.getAuthHeaders();
+
+    // 1. Start multipart upload
+    const startRes = await fetch(`${API_BASE}/api/upload/multipart/start`, {
+      method: 'POST',
+      headers: { ...headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ folder, filename: file.name, contentType: file.type }),
+    });
+    if (!startRes.ok) {
+      const err = await startRes.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to start upload');
+    }
+    const { uploadId, key } = await startRes.json();
+
+    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+    const parts = [];
+
+    // 2. Upload each chunk
+    try {
+      for (let i = 0; i < totalChunks; i++) {
+        const start = i * CHUNK_SIZE;
+        const chunk = file.slice(start, start + CHUNK_SIZE);
+
+        const partRes = await fetch(`${API_BASE}/api/upload/multipart/part`, {
+          method: 'POST',
+          headers: {
+            ...headers,
+            'X-Upload-Id': uploadId,
+            'X-Upload-Key': key,
+            'X-Part-Number': String(i + 1),
+            'Content-Type': 'application/octet-stream',
+          },
+          body: chunk,
+        });
+
+        if (!partRes.ok) {
+          const err = await partRes.json().catch(() => ({}));
+          throw new Error(err.error || `Failed to upload part ${i + 1}`);
+        }
+
+        const part = await partRes.json();
+        parts.push({ partNumber: part.partNumber, etag: part.etag });
+
+        if (onProgress) onProgress(Math.round(((i + 1) / totalChunks) * 95));
+      }
+
+      // 3. Complete the upload
+      const completeRes = await fetch(`${API_BASE}/api/upload/multipart/complete`, {
+        method: 'POST',
+        headers: { ...headers, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uploadId, key, parts }),
+      });
+      if (!completeRes.ok) {
+        const err = await completeRes.json().catch(() => ({}));
+        throw new Error(err.error || 'Failed to complete upload');
+      }
+
+      const data = await completeRes.json();
+      if (onProgress) onProgress(100);
+      return data.url;
+
+    } catch (error) {
+      // Abort the multipart upload to clean up R2
+      fetch(`${API_BASE}/api/upload/multipart/abort`, {
+        method: 'DELETE',
+        headers: { ...headers, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uploadId, key }),
+      }).catch(() => {});
+      throw error;
+    }
+  },
+
+  /**
    * Delete a file from R2
    * @param {string} url - URL of the file (or the key)
    * @returns {Promise<void>}

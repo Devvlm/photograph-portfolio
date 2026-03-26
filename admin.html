@@ -5,7 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
   <title>Admin | Portfolio Dashboard</title>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
 </head>
 <body>
   <div id="app" class="admin-layout">
@@ -514,6 +518,12 @@
               <input type="file" id="videoFile" accept="video/*">
             </div>
             <div id="videoPreview" class="video-preview" style="display: none;"></div>
+            <div id="uploadProgress" style="display:none;" class="upload-progress">
+              <div class="upload-progress-bar">
+                <div class="upload-progress-fill" id="uploadProgressFill"></div>
+              </div>
+              <p class="upload-progress-text" id="uploadProgressText">Video uploaden... 0%</p>
+            </div>
             <input type="hidden" id="videoFileUrl">
           </div>
 
