@@ -1,6 +1,8 @@
 name = "portfolio-api"
 main = "src/index.js"
 compatibility_date = "2024-01-01"
+account_id = "939b6cd9c8e67e6b05b521a729990a4f"
+workers_dev = true
 
 [vars]
 CORS_ORIGIN = "*"
@@ -12,8 +14,8 @@ preview_bucket_name = "portfolio-media-dev"
 
 [[kv_namespaces]]
 binding = "TRANSLATIONS_KV"
-id = "translations_kv_placeholder"
-preview_id = "translations_kv_preview_placeholder"
+id = "227487ed479f43b48bf80cc2c28df9b1"
+preview_id = "37a4fb2aa16e437fbe8c86bff6941b5a"
 
 # Secrets (set via: wrangler secret put SECRET_NAME)
 # - ADMIN_PASSWORD_HASH (bcrypt hash of admin password)
