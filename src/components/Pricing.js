@@ -32,7 +32,6 @@ function renderCard(pkgKey) {
   return `
     <article class="pricing-card">
       <div class="pricing-card-header">
-        <p class="pricing-card-type" data-i18n-key="${pk}.type">${t(`${pk}.type`)}</p>
         <h3 class="pricing-card-title" data-i18n-key="${pk}.title">${t(`${pk}.title`)}</h3>
         <p class="pricing-card-target" data-i18n-key="${pk}.target">${t(`${pk}.target`)}</p>
       </div>
