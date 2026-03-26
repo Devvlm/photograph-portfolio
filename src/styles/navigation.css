@@ -27,15 +27,14 @@
 
 /* Logo */
 .nav-logo {
-  font-family: var(--font-display);
-  font-size: var(--text-2xl);
-  font-weight: var(--font-bold);
-  color: var(--text-primary);
-  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
 }
 
-.nav-logo span {
-  color: var(--accent-primary);
+.nav-logo-img {
+  height: 110px;
+  width: auto;
+  display: block;
 }
 
 /* Nav Links */
@@ -202,13 +201,14 @@
 }
 
 .footer-logo {
-  font-family: var(--font-display);
-  font-size: var(--text-3xl);
-  font-weight: var(--font-bold);
+  display: flex;
+  align-items: center;
 }
 
-.footer-logo span {
-  color: var(--accent-primary);
+.footer-logo-img {
+  height: 72px;
+  width: auto;
+  display: block;
 }
 
 .footer-links {
