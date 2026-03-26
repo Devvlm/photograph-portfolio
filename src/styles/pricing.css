@@ -207,17 +207,19 @@
   display: grid;
   grid-template-columns: 16px 1fr;
   gap: var(--space-3);
-  align-items: baseline;
+  align-items: center;
   font-size: var(--text-sm);
   color: var(--text-secondary);
   line-height: var(--leading-snug);
 }
 
 .pricing-item::before {
-  content: '—';
-  color: var(--accent-primary);
-  font-size: var(--text-xs);
-  line-height: 1.6;
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  justify-self: center;
 }
 
 .pricing-item-group {
