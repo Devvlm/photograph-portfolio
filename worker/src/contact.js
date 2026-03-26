@@ -36,7 +36,7 @@ export async function handleContact(request, env, { jsonResponse, errorResponse 
 
   // --- Global: 2 per second ---
   const secKey = `ratelimit:contact:global:s:${now}`;
-  if (!await checkAndIncrement(kv, secKey, GLOBAL_PER_SECOND, 2)) {
+  if (!await checkAndIncrement(kv, secKey, GLOBAL_PER_SECOND, 60)) {
     return errorResponse('Too many requests. Please try again in a moment.', 429, env, request);
   }
 
