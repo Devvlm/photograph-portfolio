@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "description": "Professionele fotograaf en video-editor portfolio met creatieve visuele verhalen",
+    "title": "Portfolio | Fotograaf & Video-editor"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "Over mij",
+    "portfolio": "Portfolio",
+    "contact": "Contact"
+  },
+  "hero": {
+    "loading": "Ervaring laden",
+    "title": "Momenten vastleggen, Verhalen creëren",
+    "subtitle": "Fotograaf & Video-editor",
+    "viewWork": "Bekijk werk",
+    "getInTouch": "Neem contact op",
+    "scroll": "Scrollen"
+  },
+  "about": {
+    "label": "Over mij",
+    "title": "Gepassioneerd Visueel Verhalenverteller",
+    "text1": "Met meer dan 8 jaar ervaring in fotografie en video-bewerking heb ik mijn carrière gewijd aan het vastleggen van authentieke momenten en deze te transformeren in boeiende visuele verhalen.",
+    "text2": "Van intieme bruiloften tot commerciële campagnes breng ik een uniek perspectief dat technische expertise combineert met artistieke visie. Mijn werk is te zien geweest in talloze publicaties en heeft merken geholpen om dieper contact te maken met hun publiek.",
+    "yearsExp": "Jaren ervaring",
+    "projectsComp": "Afgeronde projecten",
+    "happyClients": "Tevreden klanten"
+  },
+  "portfolio": {
+    "title": "Mijn werk",
+    "subtitle": "Een geselecteerde collectie van mijn beste projecten",
+    "filters": {
+      "all": "Alles",
+      "photography": "Fotografie",
+      "video": "Video",
+      "editing": "Bewerking"
+    }
+  },
+  "contact": {
+    "label": "Neem contact op",
+    "title": "Laten we samenwerken",
+    "text": "Heb je een project in gedachten? Ik hoor er graag over. Of het nu een bruiloft, commerciële shoot of creatieve samenwerking is, laten we samen iets geweldigs creëren.",
+    "email": "E-mail",
+    "phone": "Telefoon",
+    "location": "Locatie",
+    "form": {
+      "name": "Naam",
+      "email": "E-mail",
+      "subject": "Onderwerp",
+    "message": "Bericht",
+    "send": "Verstuur bericht",
+    "errors": {
+      "nameRequired": "Naam is verplicht",
+      "nameMinLength": "Voer een geldige naam in (minimaal 2 tekens)",
+      "emailRequired": "Voer een geldig e-mailadres in",
+      "emailInvalid": "Voer een geldig e-mailadres in",
+      "subjectRequired": "Onderwerp is verplicht",
+      "subjectMinLength": "Voer een geldig onderwerp in (minimaal 2 tekens)",
+      "messageRequired": "Bericht is verplicht",
+      "messageMinLength": "Bericht moet minimaal 10 tekens bevatten"
+    },
+    "success": "Bedankt! Je bericht is verzonden. Ik neem zo snel mogelijk contact met je op.",
+    "sending": "Versturen..."
+    }
+  },
+  "footer": {
+    "copyright": "© 2024 Studio. Alle rechten voorbehouden.",
+    "privacy": "Privacybeleid",
+    "terms": "Algemene voorwaarden"
+  }
+}

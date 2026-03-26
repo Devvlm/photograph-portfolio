@@ -1,0 +1,33 @@
+{
+  "items": [
+    {
+      "id": "1769615591532-yov2skuhx",
+      "title": "foto",
+      "category": "photo",
+      "type": "image",
+      "thumbnail_url": "/api/media/thumbnails/1769615586029-jyzn3sveb.png",
+      "fullsize_url": "/api/media/fullsize/1769615589543-068vji3cm.png",
+      "video_url": null,
+      "description": null,
+      "display_order": 0,
+      "is_featured": false,
+      "created_at": "2026-01-28T15:53:11.532Z",
+      "updated_at": "2026-01-28T15:53:11.532Z"
+    },
+    {
+      "id": "1769615848279-x5ddmqi55",
+      "title": "foto",
+      "category": "photo",
+      "type": "image",
+      "thumbnail_url": "/api/media/thumbnails/1769615842043-tebfwmmya.png",
+      "fullsize_url": "/api/media/fullsize/1769615846372-09rto85m3.png",
+      "video_url": null,
+      "description": null,
+      "display_order": 0,
+      "is_featured": false,
+      "created_at": "2026-01-28T15:57:28.279Z",
+      "updated_at": "2026-01-28T15:57:28.279Z"
+    }
+  ],
+  "lastModified": "2026-01-28T15:57:28.280Z"
+}

@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "description": "Professional photographer and video editor portfolio showcasing creative visual storytelling",
+    "title": "Portfolio | Photographer & Editor"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "portfolio": "Portfolio",
+    "contact": "Contact"
+  },
+  "hero": {
+    "loading": "Loading Experience",
+    "title": "Capturing Moments Creating Stories",
+    "subtitle": "Photographer & Video Editor",
+    "viewWork": "View Work",
+    "getInTouch": "Get in Touch",
+    "scroll": "Scroll"
+  },
+  "about": {
+    "label": "About Me",
+    "title": "Passionate Visual Storyteller",
+    "text1": "With over 8 years of experience in photography and video editing, I've dedicated my career to capturing authentic moments and transforming them into compelling visual narratives.",
+    "text2": "From intimate weddings to commercial campaigns, I bring a unique perspective that blends technical expertise with artistic vision. My work has been featured in numerous publications and has helped brands connect with their audiences on a deeper level.",
+    "yearsExp": "Years Experience",
+    "projectsComp": "Projects Completed",
+    "happyClients": "Happy Clients"
+  },
+  "portfolio": {
+    "title": "My Work",
+    "subtitle": "A curated selection of my best projects",
+    "filters": {
+      "all": "All",
+      "photography": "Photography",
+      "video": "Video",
+      "editing": "Editing"
+    }
+  },
+  "contact": {
+    "label": "Get in Touch",
+    "title": "Let's Work Together",
+    "text": "Have a project in mind? I'd love to hear about it. Whether it's a wedding, commercial shoot, or creative collaboration, let's create something amazing together.",
+    "email": "Email",
+    "phone": "Phone",
+    "location": "Location",
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "subject": "Subject",
+    "message": "Message",
+    "send": "Send Message",
+    "errors": {
+      "nameRequired": "Please enter your name",
+      "nameMinLength": "Please enter a valid name (minimum 2 characters)",
+      "emailRequired": "Please enter a valid email address",
+      "emailInvalid": "Please enter a valid email address",
+      "subjectRequired": "Subject is required",
+      "subjectMinLength": "Please enter a valid subject (minimum 2 characters)",
+      "messageRequired": "Message is required",
+      "messageMinLength": "Please enter a message (at least 10 characters)"
+    },
+    "success": "Thank you! Your message has been sent. I'll get back to you soon.",
+    "sending": "Sending..."
+    }
+  },
+  "footer": {
+    "copyright": "© 2024 Studio. All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  }
+}

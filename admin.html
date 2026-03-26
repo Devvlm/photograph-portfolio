@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin | Portfolio Dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+</head>
+<body>
+  <div id="app" class="admin-layout">
+    <!-- Login View -->
+    <div id="loginView" class="login-page">
+      <div class="login-card">
+        <div class="login-logo">
+          <h1>Studio<span>.</span></h1>
+        </div>
+        <p class="login-subtitle">Admin Dashboard</p>
+
+        <div id="loginError" class="login-error" style="display: none;"></div>
+
+        <form id="loginForm" class="login-form">
+          <div class="form-group">
+            <label class="form-label" for="password">Admin Password</label>
+            <input type="password" id="password" class="form-input" placeholder="Enter admin password" required autofocus>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%;">
+            Sign In
+          </button>
+        </form>
+
+        <p style="text-align: center; margin-top: var(--space-6); font-size: var(--text-sm); color: var(--text-muted);">
+          <a href="/" style="color: var(--accent-primary);">Back to website</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Dashboard View -->
+    <div id="dashboardView" style="display: none;">
+      <!-- Header -->
+      <header class="admin-header">
+        <a href="/admin" class="admin-header-logo">Studio<span>.</span> Admin</a>
+        <div class="admin-header-actions">
+          <span class="admin-user">Admin</span>
+          <a href="/" class="btn btn-outline" style="padding: var(--space-2) var(--space-4); font-size: var(--text-xs);">View Site</a>
+          <button id="logoutBtn" class="btn btn-outline" style="padding: var(--space-2) var(--space-4); font-size: var(--text-xs);">Sign Out</button>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="admin-content">
+        <h1 class="admin-title">Portfolio Items</h1>
+        <p class="admin-subtitle">Manage your portfolio images and videos</p>
+
+        <!-- Actions Bar -->
+        <div class="admin-actions">
+          <div class="admin-filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="photo">Photo</button>
+            <button class="filter-btn" data-filter="video">Video</button>
+            <button class="filter-btn" data-filter="editing">Editing</button>
+          </div>
+          <button id="addItemBtn" class="btn btn-primary">+ Add New Item</button>
+        </div>
+
+        <!-- Portfolio Grid -->
+        <div id="portfolioGrid" class="admin-grid">
+          <!-- Items loaded dynamically -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+          <div class="empty-state-icon">📷</div>
+          <h3 class="empty-state-title">No portfolio items yet</h3>
+          <p class="empty-state-text">Add your first portfolio item to get started.</p>
+          <button class="btn btn-primary" onclick="document.getElementById('addItemBtn').click()">Add First Item</button>
+        </div>
+      </main>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div id="itemModal" class="modal-overlay">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 id="modalTitle" class="modal-title">Add Portfolio Item</h2>
+          <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+
+        <form id="itemForm" class="modal-body">
+          <input type="hidden" id="itemId">
+
+          <div class="form-group">
+            <label class="form-label" for="itemTitle">Title *</label>
+            <input type="text" id="itemTitle" class="form-input" placeholder="Project title" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="itemCategory">Category *</label>
+              <select id="itemCategory" class="form-input" required>
+                <option value="photo">Photography</option>
+                <option value="video">Video</option>
+                <option value="editing">Editing</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="itemType">Type *</label>
+              <select id="itemType" class="form-input" required>
+                <option value="image">Image</option>
+                <option value="video">Video</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Image Upload Section (shown when Type = Image) -->
+          <div class="form-group" id="imageUploadGroup">
+            <label class="form-label">Image *</label>
+            <div id="imageUpload" class="file-upload">
+              <div class="file-upload-icon">📤</div>
+              <p class="file-upload-text">Click or drag to upload image</p>
+              <p class="file-upload-hint">Recommended: 1920x1080px or larger, max 10MB</p>
+              <input type="file" id="imageFile" accept="image/*">
+            </div>
+            <div id="cropperContainer" class="cropper-container" style="display: none;"></div>
+            <input type="hidden" id="thumbnailUrl">
+            <input type="hidden" id="fullsizeUrl">
+            <input type="hidden" id="originalImageData">
+          </div>
+
+          <!-- Video Upload Section (shown when Type = Video) -->
+          <div class="form-group" id="videoUploadGroup" style="display: none;">
+            <label class="form-label">Video File *</label>
+            <div id="videoUpload" class="file-upload">
+              <div class="file-upload-icon">🎬</div>
+              <p class="file-upload-text">Click or drag to upload video</p>
+              <p class="file-upload-hint">MP4, WebM, or MOV, max 500MB</p>
+              <input type="file" id="videoFile" accept="video/*">
+            </div>
+            <div id="videoPreview" class="video-preview" style="display: none;"></div>
+            <input type="hidden" id="videoFileUrl">
+          </div>
+
+          <!-- Thumbnail for Video (shown when Type = Video) -->
+          <div class="form-group" id="videoThumbnailGroup" style="display: none;">
+            <label class="form-label">Video Thumbnail *</label>
+            <div id="videoThumbnailUpload" class="file-upload">
+              <div class="file-upload-icon">🖼️</div>
+              <p class="file-upload-text">Click or drag to upload thumbnail</p>
+              <p class="file-upload-hint">Recommended: 1920x1080px, max 10MB</p>
+              <input type="file" id="videoThumbnailFile" accept="image/*">
+            </div>
+            <div id="videoThumbnailCropperContainer" class="cropper-container" style="display: none;"></div>
+            <input type="hidden" id="videoThumbnailUrl">
+            <input type="hidden" id="videoFullsizeUrl">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="itemDescription">Description (optional)</label>
+            <textarea id="itemDescription" class="form-textarea" rows="3" placeholder="Brief description of this work..."></textarea>
+          </div>
+        </form>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
+          <button type="submit" form="itemForm" class="btn btn-primary" id="saveItemBtn">Save Item</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal-overlay">
+      <div class="modal" style="max-width: 400px;">
+        <div class="modal-header">
+          <h2 class="modal-title">Delete Item</h2>
+          <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete "<span id="deleteItemTitle"></span>"?</p>
+          <p style="color: var(--text-muted); margin-top: var(--space-2); font-size: var(--text-sm);">This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeDeleteModal()">Cancel</button>
+          <button type="button" class="btn btn-delete" id="confirmDeleteBtn">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+      <div class="loading-spinner"></div>
+      <p id="loadingText">Loading...</p>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+  </div>
+
+  <script type="module" src="/src/admin.js"></script>
+</body>
+</html>
