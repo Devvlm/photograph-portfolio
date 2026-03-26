@@ -108,7 +108,7 @@ export async function handlePortfolio(request, env, { jsonResponse, errorRespons
       const newItem = {
         id: generateId(),
         title,
-        category,
+        category: body.category || 'general',
         type,
         thumbnail_url,
         fullsize_url,
