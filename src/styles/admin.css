@@ -36,13 +36,9 @@
   margin-bottom: var(--space-8);
 }
 
-.login-logo h1 {
-  font-family: var(--font-display);
-  font-size: var(--text-3xl);
-}
-
-.login-logo span {
-  color: var(--accent-primary);
+.admin-login-logo {
+  height: 70px;
+  width: auto;
 }
 
 .login-subtitle {
@@ -81,13 +77,13 @@
 }
 
 .admin-header-logo {
-  font-family: var(--font-display);
-  font-size: var(--text-xl);
-  font-weight: var(--font-bold);
+  display: flex;
+  align-items: center;
 }
 
-.admin-header-logo span {
-  color: var(--accent-primary);
+.admin-header-logo-img {
+  height: 45px;
+  width: auto;
 }
 
 .admin-header-actions {
