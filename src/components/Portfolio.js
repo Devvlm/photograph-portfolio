@@ -54,6 +54,11 @@ export async function initPortfolio() {
     grid.innerHTML = filteredItems.map((item, index) => `
       <div class="portfolio-item" data-index="${index}" data-type="${item.type}">
         <img src="${item.thumbnail}" alt="${item.title}" loading="lazy">
+        ${item.type === 'video' && item.videoUrl ? `
+          <video class="portfolio-hover-video" muted loop playsinline preload="none">
+            <source src="${item.videoUrl}" type="video/mp4">
+          </video>
+        ` : ''}
         <div class="portfolio-overlay">
           <span class="portfolio-category">${item.category}</span>
           <h3 class="portfolio-title">${item.title}</h3>
@@ -61,13 +66,29 @@ export async function initPortfolio() {
       </div>
     `).join('');
 
-    // Add click listeners to new items
+    // Add click listeners and hover-to-play for video items
     const items = grid.querySelectorAll('.portfolio-item');
     items.forEach(item => {
       item.addEventListener('click', () => {
         const index = parseInt(item.dataset.index);
         openLightbox(index);
       });
+
+      const hoverVideo = item.querySelector('.portfolio-hover-video');
+      if (hoverVideo) {
+        item.addEventListener('mouseenter', () => {
+          hoverVideo.currentTime = 0;
+          hoverVideo.style.opacity = '1';
+          item.classList.add('is-playing');
+          hoverVideo.play().catch(() => {});
+        });
+        item.addEventListener('mouseleave', () => {
+          hoverVideo.pause();
+          hoverVideo.currentTime = 0;
+          hoverVideo.style.opacity = '0';
+          item.classList.remove('is-playing');
+        });
+      }
     });
 
     // Animate items in
