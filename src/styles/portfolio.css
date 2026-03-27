@@ -283,8 +283,30 @@
     height: 56.25vw; /* 16:9 */
   }
 
-  .lightbox-prev { left: var(--space-3); }
-  .lightbox-next { right: var(--space-3); }
+  /* Move nav to bottom bar on mobile */
+  .lightbox-nav {
+    top: auto;
+    bottom: var(--space-6);
+    transform: none;
+    width: 64px;
+    height: 64px;
+    font-size: 28px;
+    background: rgba(18, 18, 18, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 50%;
+  }
+
+  .lightbox-prev {
+    left: calc(50% - 76px);
+    right: auto;
+  }
+
+  .lightbox-next {
+    left: calc(50% + 12px);
+    right: auto;
+  }
 }
 
 /* Responsive */
