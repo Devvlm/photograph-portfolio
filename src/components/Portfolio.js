@@ -107,6 +107,7 @@ export async function initPortfolio() {
   function openLightbox(index) {
     currentIndex = index;
     updateLightboxContent();
+    window.scrollTo({ top: 0, behavior: 'instant' });
     lightbox.classList.add('active');
     document.body.style.overflow = 'hidden';
   }
