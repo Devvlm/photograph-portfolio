@@ -103,6 +103,31 @@ export async function initPortfolio() {
     });
   }
 
+  // Fullscreen helpers
+  function requestFullscreen(el) {
+    if (el.requestFullscreen) return el.requestFullscreen();
+    if (el.webkitRequestFullscreen) return el.webkitRequestFullscreen();
+  }
+
+  function exitFullscreen() {
+    if (document.exitFullscreen && document.fullscreenElement) return document.exitFullscreen();
+    if (document.webkitExitFullscreen && document.webkitFullscreenElement) return document.webkitExitFullscreen();
+  }
+
+  // Close lightbox when user exits fullscreen via Escape/browser UI
+  document.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement && lightbox.classList.contains('active')) {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  });
+  document.addEventListener('webkitfullscreenchange', () => {
+    if (!document.webkitFullscreenElement && lightbox.classList.contains('active')) {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  });
+
   // Lightbox functions
   function openLightbox(index) {
     currentIndex = index;
@@ -110,11 +135,13 @@ export async function initPortfolio() {
     updateNavButtons();
     lightbox.classList.add('active');
     document.body.style.overflow = 'hidden';
+    requestFullscreen(lightbox);
   }
 
   function closeLightbox() {
     lightbox.classList.remove('active');
     document.body.style.overflow = '';
+    exitFullscreen();
   }
 
   function updateLightboxContent() {
