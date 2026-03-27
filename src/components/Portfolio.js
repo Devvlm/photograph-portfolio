@@ -130,7 +130,14 @@ export async function initPortfolio() {
       } else {
         // Direct video URL
         lightboxContent.innerHTML = `
-          <video controls autoplay style="max-width: 90vw; max-height: 80vh;">
+          <video
+            controls
+            autoplay
+            playsinline
+            controlsList="nodownload"
+            disablePictureInPicture
+            oncontextmenu="return false"
+            style="max-width: 90vw; max-height: 75vh; display: block;">
             <source src="${item.videoUrl}" type="video/mp4">
             Your browser does not support the video tag.
           </video>
