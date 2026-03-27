@@ -20,9 +20,9 @@ export function getDevicePixelRatio() {
 }
 
 export function getOptimalImageCount() {
-  if (isMobile()) return 6;
-  if (isTablet()) return 8;
-  return 12;
+  if (isMobile()) return 10;
+  if (isTablet()) return 16;
+  return 24;
 }
 
 export function shouldEnableAntialias() {

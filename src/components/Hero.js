@@ -17,7 +17,7 @@ async function getFloatingImages() {
     const items = await portfolioService.getAll();
     if (items && items.length > 0) {
       const apiBase = import.meta.env.VITE_API_URL || '';
-      return items.slice(0, 12).map(item => {
+      return items.slice(0, 24).map(item => {
         const url = item.thumbnail_url;
         return url && url.startsWith('/') ? `${apiBase}${url}` : url;
       });
