@@ -24,7 +24,6 @@ import { I18n } from './lib/i18n.js';
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', async () => {
-  console.log('Portfolio site initializing...');
 
   // Initialize i18n first
   window.i18n = new I18n();
@@ -69,7 +68,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Add intersection observer for section animations
   initScrollAnimations();
 
-  console.log('Portfolio site ready!');
 });
 
 /**

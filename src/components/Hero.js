@@ -48,10 +48,7 @@ export async function initHero() {
     await sceneManager.loadAssets({
       modelUrl: '/models/clapperboard.glb',
       imageUrls: imageUrls,
-      onProgress: (progress) => {
-        // Update loading indicator if needed
-        console.log(`Loading: ${Math.round(progress * 100)}%`);
-      }
+      onProgress: () => {}
     });
 
     // Hide loader
