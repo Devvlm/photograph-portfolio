@@ -207,24 +207,22 @@
   position: absolute;
   top: var(--space-6);
   right: var(--space-6);
-  width: 48px;
-  height: 48px;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  border-radius: 50%;
-  color: var(--text-primary);
-  font-size: var(--text-2xl);
+  width: 44px;
+  height: 44px;
+  background: none;
+  border: none;
+  border-radius: 0;
+  color: rgba(255, 255, 255, 0.85);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: color var(--transition-fast);
   z-index: 1;
 }
 
 .lightbox-close:hover {
-  background: var(--accent-primary);
-  border-color: var(--accent-primary);
+  color: #fff;
 }
 
 .lightbox-nav {
@@ -289,23 +287,10 @@
     height: 56.25vw; /* 16:9 */
   }
 
-  /* Close button — no circle on mobile */
+  /* Close button — smaller offset on mobile */
   .lightbox-close {
-    background: none;
-    border: none;
-    border-radius: 0;
     top: var(--space-4);
     right: var(--space-4);
-    font-size: 32px;
-    width: 44px;
-    height: 44px;
-    color: rgba(255, 255, 255, 0.9);
-  }
-
-  .lightbox-close:hover {
-    background: none;
-    border-color: transparent;
-    color: #fff;
   }
 
   /* Move nav to bottom bar on mobile — icon only, no circle */
