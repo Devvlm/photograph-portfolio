@@ -186,8 +186,8 @@
 
 .lightbox-content {
   position: relative;
-  max-width: 90vw;
-  max-height: 90vh;
+  max-width: 100%;
+  max-height: 100%;
   transform: scale(0.9);
   transition: transform var(--transition-base);
 }
@@ -342,6 +342,13 @@
   .lightbox-next {
     left: calc(50% + 12px);
     right: auto;
+  }
+}
+
+/* Desktop lightbox padding */
+@media (min-width: 769px) {
+  .lightbox {
+    padding: 80px;
   }
 }
 
