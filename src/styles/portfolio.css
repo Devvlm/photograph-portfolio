@@ -224,7 +224,7 @@
   pointer-events: none;
 }
 
-.lightbox.active .lightbox-close {
+body.lightbox-open .lightbox-close {
   opacity: 1;
   pointer-events: auto;
 }
@@ -255,7 +255,7 @@
   pointer-events: none;
 }
 
-.lightbox.active .lightbox-nav {
+body.lightbox-open .lightbox-nav {
   opacity: 1;
   pointer-events: auto;
 }

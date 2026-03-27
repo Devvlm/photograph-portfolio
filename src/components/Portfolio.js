@@ -108,11 +108,13 @@ export async function initPortfolio() {
     currentIndex = index;
     updateLightboxContent();
     lightbox.classList.add('active');
+    document.body.classList.add('lightbox-open');
     document.body.style.overflow = 'hidden';
   }
 
   function closeLightbox() {
     lightbox.classList.remove('active');
+    document.body.classList.remove('lightbox-open');
     document.body.style.overflow = '';
   }
 
