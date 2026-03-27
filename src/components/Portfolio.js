@@ -60,7 +60,7 @@ export async function initPortfolio() {
           </video>
         ` : ''}
         <div class="portfolio-overlay">
-          <span class="portfolio-category">${item.category}</span>
+          <span class="portfolio-category">DTRMNDVISUALS</span>
           <h3 class="portfolio-title">${item.title}</h3>
         </div>
       </div>
