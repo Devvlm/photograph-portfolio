@@ -204,7 +204,7 @@
 }
 
 .lightbox-close {
-  position: fixed;
+  position: absolute;
   top: var(--space-6);
   right: var(--space-6);
   width: 48px;
@@ -219,14 +219,7 @@
   justify-content: center;
   cursor: pointer;
   transition: all var(--transition-fast);
-  z-index: calc(var(--z-modal) + 1);
-  opacity: 0;
-  pointer-events: none;
-}
-
-body.lightbox-open .lightbox-close {
-  opacity: 1;
-  pointer-events: auto;
+  z-index: 1;
 }
 
 .lightbox-close:hover {
@@ -235,10 +228,10 @@ body.lightbox-open .lightbox-close {
 }
 
 .lightbox-nav {
-  position: fixed;
+  position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  z-index: calc(var(--z-modal) + 1);
+  z-index: 10;
   width: 48px;
   height: 48px;
   background: var(--bg-tertiary);
@@ -251,13 +244,6 @@ body.lightbox-open .lightbox-close {
   justify-content: center;
   cursor: pointer;
   transition: all var(--transition-fast);
-  opacity: 0;
-  pointer-events: none;
-}
-
-body.lightbox-open .lightbox-nav {
-  opacity: 1;
-  pointer-events: auto;
 }
 
 .lightbox-nav:hover {
