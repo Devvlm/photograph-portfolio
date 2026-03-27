@@ -283,6 +283,25 @@
     height: 56.25vw; /* 16:9 */
   }
 
+  /* Close button — no circle on mobile */
+  .lightbox-close {
+    background: none;
+    border: none;
+    border-radius: 0;
+    top: var(--space-4);
+    right: var(--space-4);
+    font-size: 32px;
+    width: 44px;
+    height: 44px;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .lightbox-close:hover {
+    background: none;
+    border-color: transparent;
+    color: #fff;
+  }
+
   /* Move nav to bottom bar on mobile — icon only, no circle */
   .lightbox-nav {
     top: auto;
