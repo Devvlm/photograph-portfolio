@@ -16,8 +16,11 @@ async function getFloatingImages() {
   try {
     const items = await portfolioService.getAll();
     if (items && items.length > 0) {
-      // Use thumbnail URLs from API items
-      return items.slice(0, 12).map(item => item.thumbnail_url);
+      const apiBase = import.meta.env.VITE_API_URL || '';
+      return items.slice(0, 12).map(item => {
+        const url = item.thumbnail_url;
+        return url && url.startsWith('/') ? `${apiBase}${url}` : url;
+      });
     }
   } catch (error) {
     console.warn('Failed to load images from API:', error);

@@ -239,6 +239,34 @@
   right: var(--space-6);
 }
 
+@media (max-width: 768px) {
+  .lightbox-content {
+    width: 100vw;
+    max-width: 100vw;
+    max-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightbox-content img,
+  .lightbox-content video {
+    width: 100vw;
+    max-width: 100vw;
+    max-height: 80dvh;
+    height: auto;
+  }
+
+  .lightbox-content iframe {
+    width: 100vw;
+    max-width: 100vw;
+    height: 56.25vw; /* 16:9 */
+  }
+
+  .lightbox-prev { left: var(--space-3); }
+  .lightbox-next { right: var(--space-3); }
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .portfolio-grid {
