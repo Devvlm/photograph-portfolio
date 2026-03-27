@@ -156,11 +156,11 @@ export async function handleUpload(request, env, { jsonResponse, errorResponse }
       const headers = new Headers();
       object.writeHttpMetadata(headers);
       headers.set('etag', object.httpEtag);
-      headers.set('Cache-Control', 'public, max-age=31536000'); // 1 year cache
+      headers.set('Cache-Control', 'public, max-age=31536000');
+      headers.set('Access-Control-Allow-Origin', '*');
+      headers.set('Access-Control-Allow-Methods', 'GET, HEAD');
 
-      return new Response(object.body, {
-        headers,
-      });
+      return new Response(object.body, { headers });
 
     } catch (error) {
       console.error('Media serve error:', error);

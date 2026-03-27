@@ -9,6 +9,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 // Create reusable loaders
 const gltfLoader = new GLTFLoader();
 const textureLoader = new THREE.TextureLoader();
+textureLoader.crossOrigin = 'anonymous';
 
 /**
  * Load a GLB/GLTF model
