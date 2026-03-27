@@ -5,7 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Professional photographer and video editor portfolio showcasing creative visual storytelling" data-i18n-key="meta.description">
   <title data-i18n-key="meta.title">Portfolio | Photographer & Editor</title>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
 </head>
 <body>
   <!-- Navigation -->
@@ -83,8 +87,12 @@
     <!-- Lightbox -->
     <div class="lightbox" id="lightbox">
       <button class="lightbox-close" id="lightboxClose">&times;</button>
-      <button class="lightbox-nav lightbox-prev" id="lightboxPrev">&#8249;</button>
-      <button class="lightbox-nav lightbox-next" id="lightboxNext">&#8250;</button>
+      <button class="lightbox-nav lightbox-prev" id="lightboxPrev">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button class="lightbox-nav lightbox-next" id="lightboxNext">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+      </button>
       <div class="lightbox-content" id="lightboxContent">
         <!-- Content injected by JavaScript -->
       </div>
