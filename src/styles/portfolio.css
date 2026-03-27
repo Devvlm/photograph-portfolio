@@ -350,6 +350,11 @@
   .lightbox {
     padding: 80px;
   }
+
+  .lightbox-content img,
+  .lightbox-content video {
+    max-height: calc(100vh - 160px);
+  }
 }
 
 /* Responsive */
