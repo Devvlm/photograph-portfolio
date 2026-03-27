@@ -133,7 +133,9 @@
 }
 
 .portfolio-item.is-playing::before,
-.portfolio-item.is-playing::after {
+.portfolio-item.is-playing::after,
+.portfolio-item.is-playing[data-type="video"]::before,
+.portfolio-item.is-playing[data-type="video"]::after {
   display: none;
 }
 
