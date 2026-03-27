@@ -251,6 +251,12 @@
   border-color: var(--accent-primary);
 }
 
+.lightbox-nav:disabled {
+  opacity: 0.25;
+  cursor: default;
+  pointer-events: none;
+}
+
 .lightbox-prev {
   left: var(--space-6);
 }

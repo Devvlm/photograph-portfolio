@@ -107,6 +107,7 @@ export async function initPortfolio() {
   function openLightbox(index) {
     currentIndex = index;
     updateLightboxContent();
+    updateNavButtons();
     lightbox.classList.add('active');
     document.body.style.overflow = 'hidden';
   }
@@ -180,9 +181,17 @@ export async function initPortfolio() {
     }
   }
 
+  function updateNavButtons() {
+    if (lightboxPrev) lightboxPrev.disabled = currentIndex === 0;
+    if (lightboxNext) lightboxNext.disabled = currentIndex === filteredItems.length - 1;
+  }
+
   function navigateLightbox(direction) {
-    currentIndex = (currentIndex + direction + filteredItems.length) % filteredItems.length;
+    const next = currentIndex + direction;
+    if (next < 0 || next >= filteredItems.length) return;
+    currentIndex = next;
     updateLightboxContent();
+    updateNavButtons();
   }
 
   // Event listeners
