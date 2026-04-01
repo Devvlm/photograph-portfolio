@@ -499,55 +499,28 @@
 
           <!-- Video Upload Section (shown when Type = Video) -->
           <div class="form-group" id="videoUploadGroup" style="display: none;">
-            <label class="form-label">Video File *</label>
-            <div id="videoUpload" class="file-upload">
-              <div class="file-upload-icon">🎬</div>
-              <p class="file-upload-text">Click or drag to upload video</p>
-              <p class="file-upload-hint">MP4, WebM, or MOV, max 500MB</p>
-              <input type="file" id="videoFile" accept="video/*">
-            </div>
-            <div id="videoPreview" class="video-preview" style="display: none;"></div>
-            <div id="uploadProgress" style="display:none;" class="upload-progress">
-              <div class="upload-progress-bar">
-                <div class="upload-progress-fill" id="uploadProgressFill"></div>
-              </div>
-              <p class="upload-progress-text" id="uploadProgressText">Video uploaden... 0%</p>
+            <label class="form-label">YouTube URL *</label>
+            <input type="url" id="youtubeUrl" class="form-input" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off">
+            <p class="file-upload-hint" style="margin-top: var(--space-2);">Plak een YouTube URL. De thumbnail wordt automatisch opgehaald.</p>
+            <div id="youtubePreview" style="display:none; margin-top: var(--space-4);">
+              <img id="youtubeThumbPreview" alt="YouTube thumbnail" style="width:100%; border-radius: var(--radius-md); aspect-ratio:16/9; object-fit:cover;">
             </div>
             <input type="hidden" id="videoFileUrl">
           </div>
 
           <!-- Thumbnail for Video (shown when Type = Video) -->
           <div class="form-group" id="videoThumbnailGroup" style="display: none;">
-            <label class="form-label">Video Thumbnail *</label>
+            <label class="form-label">Thumbnail <span style="color: var(--text-muted); font-weight: var(--font-normal);">(optioneel — wordt automatisch van YouTube opgehaald)</span></label>
             <p id="thumbnailError" class="field-error" style="display:none;">Voeg een thumbnail toe voor je opslaat.</p>
 
-            <!-- Source toggle (shown after video is selected) -->
-            <div id="thumbnailSourceTabs" class="thumb-source-tabs" style="display:none;">
-              <button type="button" class="thumb-source-btn active" data-thumb-source="upload">Upload afbeelding</button>
-              <button type="button" class="thumb-source-btn" data-thumb-source="frame">Frame uit video</button>
-            </div>
-
-            <!-- Upload option -->
             <div id="thumbUploadSection">
               <div id="videoThumbnailUpload" class="file-upload">
                 <div class="file-upload-icon">🖼️</div>
-                <p class="file-upload-text">Click or drag to upload thumbnail</p>
-                <p class="file-upload-hint">Recommended: 1920x1080px, max 10MB</p>
+                <p class="file-upload-text">Eigen thumbnail uploaden (overschrijft auto-thumbnail)</p>
+                <p class="file-upload-hint">Aanbevolen: 1920x1080px, max 10MB</p>
                 <input type="file" id="videoThumbnailFile" accept="image/*">
               </div>
               <div id="videoThumbnailCropperContainer" class="cropper-container" style="display: none;"></div>
-            </div>
-
-            <!-- Frame picker option -->
-            <div id="framePickerSection" style="display:none;">
-              <div class="frame-picker">
-                <video id="framePickerVideo" class="frame-picker-video" preload="metadata" controls></video>
-                <div class="frame-picker-actions">
-                  <span class="frame-picker-hint">Scrol door de video en kies een frame.</span>
-                  <button type="button" class="btn btn-primary btn-sm" id="captureFrameBtn">Gebruik dit frame</button>
-                </div>
-              </div>
-              <div id="frameCropperContainer" class="cropper-container" style="display: none;"></div>
             </div>
 
             <input type="hidden" id="videoThumbnailUrl">

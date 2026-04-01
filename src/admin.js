@@ -21,8 +21,8 @@ let deleteTargetId = null;
 let imageCropper = null;
 let videoThumbnailCropper = null;
 let currentImageFile = null;
-let currentVideoFile = null;
 let currentVideoThumbnailFile = null;
+let autoYoutubeThumbnailUrl = null;
 
 // DOM Elements
 const loginView = document.getElementById('loginView');
@@ -50,23 +50,11 @@ const cropperContainer = document.getElementById('cropperContainer');
 
 // Video upload elements
 const videoUploadGroup = document.getElementById('videoUploadGroup');
-const videoUpload = document.getElementById('videoUpload');
-const videoFile = document.getElementById('videoFile');
-const videoPreview = document.getElementById('videoPreview');
+const youtubeUrlInput = document.getElementById('youtubeUrl');
 const videoThumbnailGroup = document.getElementById('videoThumbnailGroup');
 const videoThumbnailUpload = document.getElementById('videoThumbnailUpload');
 const videoThumbnailFile = document.getElementById('videoThumbnailFile');
 const videoThumbnailCropperContainer = document.getElementById('videoThumbnailCropperContainer');
-
-// Frame picker elements
-const thumbnailSourceTabs = document.getElementById('thumbnailSourceTabs');
-const thumbUploadSection   = document.getElementById('thumbUploadSection');
-const framePickerSection   = document.getElementById('framePickerSection');
-const framePickerVideo     = document.getElementById('framePickerVideo');
-const captureFrameBtn      = document.getElementById('captureFrameBtn');
-const frameCropperContainer = document.getElementById('frameCropperContainer');
-let frameCropper = null;
-let framePickerBlobUrl = null;
 
 // Type selector
 const itemType = document.getElementById('itemType');
@@ -120,9 +108,10 @@ function setupEventListeners() {
   setupImageUpload();
 
   // Video upload handlers
-  setupVideoUpload();
   setupVideoThumbnailUpload();
-  setupThumbnailSourceTabs();
+
+  // YouTube URL input handler
+  youtubeUrlInput.addEventListener('input', (e) => handleYouTubeUrlChange(e.target.value));
 
   // Delete confirmation
   confirmDeleteBtn.addEventListener('click', handleDeleteConfirm);
@@ -196,37 +185,35 @@ function setupImageUpload() {
 }
 
 /**
- * Set up video upload
+ * Extract YouTube video ID from a URL
  */
-function setupVideoUpload() {
-  // Click to upload
-  videoUpload.addEventListener('click', () => videoFile.click());
+function extractYouTubeId(url) {
+  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?/]+)/);
+  return match ? match[1] : null;
+}
 
-  // Drag and drop
-  videoUpload.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    videoUpload.classList.add('dragover');
-  });
+/**
+ * Handle YouTube URL input change
+ */
+function handleYouTubeUrlChange(url) {
+  const id = extractYouTubeId(url);
+  const preview = document.getElementById('youtubePreview');
+  const thumb = document.getElementById('youtubeThumbPreview');
+  const fileUrl = document.getElementById('videoFileUrl');
 
-  videoUpload.addEventListener('dragleave', () => {
-    videoUpload.classList.remove('dragover');
-  });
+  if (!id) {
+    preview.style.display = 'none';
+    thumb.src = '';
+    fileUrl.value = '';
+    autoYoutubeThumbnailUrl = null;
+    return;
+  }
 
-  videoUpload.addEventListener('drop', (e) => {
-    e.preventDefault();
-    videoUpload.classList.remove('dragover');
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      handleVideoSelect(files[0]);
-    }
-  });
-
-  // File input change
-  videoFile.addEventListener('change', (e) => {
-    if (e.target.files.length > 0) {
-      handleVideoSelect(e.target.files[0]);
-    }
-  });
+  const thumbUrl = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+  thumb.src = thumbUrl;
+  preview.style.display = 'block';
+  fileUrl.value = url;
+  autoYoutubeThumbnailUrl = thumbUrl;
 }
 
 /**
@@ -316,110 +303,6 @@ async function handleImageSelect(file) {
   reader.readAsDataURL(file);
 }
 
-/**
- * Handle video selection
- */
-async function handleVideoSelect(file) {
-  // Validate file type
-  if (!file.type.startsWith('video/')) {
-    showToast('Please select a video file', 'error');
-    return;
-  }
-
-  // Validate file size (500MB max)
-  const maxSize = 500 * 1024 * 1024;
-  if (file.size > maxSize) {
-    showToast('Video must be less than 500MB', 'error');
-    return;
-  }
-
-  // Store the file for later upload
-  currentVideoFile = file;
-
-  // Show video preview
-  videoUpload.style.display = 'none';
-  videoPreview.style.display = 'block';
-  videoPreview.innerHTML = `
-    <div class="video-preview-content">
-      <div class="video-preview-icon">🎬</div>
-      <p class="video-preview-name">${file.name}</p>
-      <p class="video-preview-size">${(file.size / (1024 * 1024)).toFixed(2)} MB</p>
-      <button type="button" class="btn btn-outline btn-sm" onclick="window.resetVideoUpload()">Verander video</button>
-    </div>
-  `;
-
-  // Enable frame picker: load video as blob URL for seeking
-  if (framePickerBlobUrl) URL.revokeObjectURL(framePickerBlobUrl);
-  framePickerBlobUrl = URL.createObjectURL(file);
-  framePickerVideo.src = framePickerBlobUrl;
-
-  // Show the source toggle tabs
-  thumbnailSourceTabs.style.display = 'flex';
-}
-
-/**
- * Switch between thumbnail source options (upload / frame picker)
- */
-function setupThumbnailSourceTabs() {
-  document.querySelectorAll('[data-thumb-source]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('[data-thumb-source]').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      if (btn.dataset.thumbSource === 'frame') {
-        thumbUploadSection.style.display = 'none';
-        framePickerSection.style.display = 'block';
-      } else {
-        framePickerSection.style.display = 'none';
-        thumbUploadSection.style.display = 'block';
-      }
-    });
-  });
-
-  captureFrameBtn.addEventListener('click', captureVideoFrame);
-}
-
-/**
- * Capture the current video frame and load it into the cropper
- */
-async function captureVideoFrame() {
-  if (!framePickerVideo.src || framePickerVideo.readyState === 0) {
-    showToast('Video nog niet geladen', 'error');
-    return;
-  }
-
-  // Draw the current frame onto a canvas
-  const canvas = document.createElement('canvas');
-  canvas.width  = framePickerVideo.videoWidth  || 1920;
-  canvas.height = framePickerVideo.videoHeight || 1080;
-  canvas.getContext('2d').drawImage(framePickerVideo, 0, 0, canvas.width, canvas.height);
-
-  const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
-
-  // Convert to a File so it can be uploaded as fullsize too
-  const blob = await (await fetch(dataUrl)).blob();
-  currentVideoThumbnailFile = new File([blob], 'frame.jpg', { type: 'image/jpeg' });
-
-  // Show cropper below the frame picker
-  frameCropperContainer.style.display = 'block';
-  captureFrameBtn.textContent = 'Frame opnieuw kiezen';
-
-  if (frameCropper) frameCropper.destroy();
-  frameCropper = new ImageCropper(frameCropperContainer, {
-    aspectRatio: 4 / 3,
-    outputWidth: 600,
-    outputHeight: 450,
-  });
-
-  try {
-    await frameCropper.setImage(dataUrl);
-    // Point videoThumbnailCropper at the frame cropper so handleSaveItem picks it up
-    videoThumbnailCropper = frameCropper;
-    hideThumbnailError();
-  } catch (err) {
-    showToast('Frame laden mislukt', 'error');
-  }
-}
 
 /**
  * Handle video thumbnail selection
@@ -494,15 +377,11 @@ function resetImageUpload() {
  * Reset video upload state
  */
 function resetVideoUpload() {
-  videoUpload.style.display = 'flex';
-  videoPreview.style.display = 'none';
-  videoPreview.innerHTML = '';
+  youtubeUrlInput.value = '';
+  document.getElementById('youtubePreview').style.display = 'none';
+  document.getElementById('youtubeThumbPreview').src = '';
   document.getElementById('videoFileUrl').value = '';
-  currentVideoFile = null;
-  videoFile.value = '';
-  if (framePickerBlobUrl) { URL.revokeObjectURL(framePickerBlobUrl); framePickerBlobUrl = null; }
-  framePickerVideo.src = '';
-  thumbnailSourceTabs.style.display = 'none';
+  autoYoutubeThumbnailUrl = null;
 }
 window.resetVideoUpload = resetVideoUpload;
 
@@ -521,16 +400,6 @@ function resetVideoThumbnailUpload() {
     videoThumbnailCropper = null;
   }
   videoThumbnailFile.value = '';
-
-  // Reset frame picker
-  if (frameCropper) { frameCropper.destroy(); frameCropper = null; }
-  frameCropperContainer.style.display = 'none';
-  frameCropperContainer.innerHTML = '';
-  framePickerSection.style.display = 'none';
-  thumbUploadSection.style.display = 'block';
-  thumbnailSourceTabs.style.display = 'none';
-  document.querySelectorAll('[data-thumb-source]').forEach(b => b.classList.toggle('active', b.dataset.thumbSource === 'upload'));
-  captureFrameBtn.textContent = 'Gebruik dit frame';
   hideThumbnailError();
 }
 window.resetVideoThumbnailUpload = resetVideoThumbnailUpload;
@@ -696,17 +565,10 @@ function openModal(item = null) {
       document.getElementById('videoFullsizeUrl').value = item.fullsize_url;
       document.getElementById('videoFileUrl').value = item.video_url || '';
 
-      // Show existing video
+      // Populate YouTube URL and preview
       if (item.video_url) {
-        videoUpload.style.display = 'none';
-        videoPreview.style.display = 'block';
-        videoPreview.innerHTML = `
-          <div class="video-preview-content">
-            <div class="video-preview-icon">🎬</div>
-            <p class="video-preview-name">Huidige video</p>
-            <button type="button" class="btn btn-outline btn-sm" onclick="window.resetVideoUpload()">Verander video</button>
-          </div>
-        `;
+        youtubeUrlInput.value = item.video_url;
+        handleYouTubeUrlChange(item.video_url);
       }
 
       // Show existing thumbnail
@@ -793,31 +655,13 @@ async function handleSaveItem(e) {
     fullsizeUrl = document.getElementById('videoFullsizeUrl').value;
     videoUrl = document.getElementById('videoFileUrl').value;
 
-    // Upload new video if selected (chunked multipart for any size)
-    if (currentVideoFile) {
-      const progressEl  = document.getElementById('uploadProgress');
-      const progressFill = document.getElementById('uploadProgressFill');
-      const progressText = document.getElementById('uploadProgressText');
-
-      try {
-        progressEl.style.display = 'block';
-        videoUrl = await storageService.uploadLargeFile(
-          currentVideoFile,
-          'videos',
-          (pct) => {
-            progressFill.style.width = pct + '%';
-            progressText.textContent = `Video uploaden... ${pct}%`;
-          }
-        );
-        progressEl.style.display = 'none';
-      } catch (error) {
-        progressEl.style.display = 'none';
-        showToast('Video upload mislukt: ' + error.message, 'error');
-        return;
-      }
+    // Validate YouTube URL
+    if (!videoUrl || !extractYouTubeId(videoUrl)) {
+      showToast('Voer een geldige YouTube URL in', 'error');
+      return;
     }
 
-    // Upload new thumbnail if selected
+    // Upload new thumbnail if selected (manual override)
     if (currentVideoThumbnailFile && videoThumbnailCropper) {
       try {
         showLoading('Uploading thumbnail...');
@@ -840,14 +684,15 @@ async function handleSaveItem(e) {
       }
     }
 
-    // Validate that we have required files
+    // Fall back to auto YouTube thumbnail if no manual thumbnail
+    if (!thumbnailUrl && autoYoutubeThumbnailUrl) {
+      thumbnailUrl = autoYoutubeThumbnailUrl;
+      fullsizeUrl = autoYoutubeThumbnailUrl;
+    }
+
     if (!thumbnailUrl || !fullsizeUrl) {
       showThumbnailError();
       showToast('Voeg een thumbnail toe voor je opslaat.', 'error');
-      return;
-    }
-    if (!videoUrl) {
-      showToast('Please upload a video file', 'error');
       return;
     }
   }

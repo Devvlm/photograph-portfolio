@@ -54,7 +54,7 @@ export async function initPortfolio() {
     grid.innerHTML = filteredItems.map((item, index) => `
       <div class="portfolio-item" data-index="${index}" data-type="${item.type}">
         <img src="${item.thumbnail}" alt="${item.title}" loading="lazy">
-        ${item.type === 'video' && item.videoUrl ? `
+        ${item.type === 'video' && item.videoUrl && !item.videoUrl.match(/youtube\.com|youtu\.be|vimeo\.com/) ? `
           <video class="portfolio-hover-video" muted loop playsinline preload="none">
             <source src="${item.videoUrl}" type="video/mp4">
           </video>
