@@ -20,13 +20,6 @@ export class FloatingImages {
     this.orbitSpeed = 0.0003;
     this.floatAmplitude = 0.2;
     this.floatSpeed = 0.5;
-    this.parallaxFactor = 0.02;
-
-    // Mouse parallax
-    this.mouseX = 0;
-    this.mouseY = 0;
-    this.targetMouseX = 0;
-    this.targetMouseY = 0;
   }
 
   /**
@@ -92,25 +85,11 @@ export class FloatingImages {
   }
 
   /**
-   * Update mouse position for parallax effect
-   * @param {number} x - Normalized mouse X (-1 to 1)
-   * @param {number} y - Normalized mouse Y (-1 to 1)
-   */
-  updateMousePosition(x, y) {
-    this.targetMouseX = x;
-    this.targetMouseY = y;
-  }
-
-  /**
    * Update animations
    * @param {number} delta - Time delta
    * @param {number} time - Total elapsed time
    */
   update(delta, time) {
-    // Smooth mouse interpolation
-    this.mouseX += (this.targetMouseX - this.mouseX) * 0.05;
-    this.mouseY += (this.targetMouseY - this.mouseY) * 0.05;
-
     this.images.forEach((mesh) => {
       const data = mesh.userData;
 
@@ -126,13 +105,9 @@ export class FloatingImages {
       // Floating motion
       const floatY = Math.sin(time * data.floatSpeed + data.floatOffset) * this.floatAmplitude;
 
-      // Parallax offset
-      const parallaxX = this.mouseX * this.parallaxFactor * data.parallaxDepth * 10;
-      const parallaxY = this.mouseY * this.parallaxFactor * data.parallaxDepth * 10;
-
       // Apply all transformations
-      mesh.position.x = orbitX + parallaxX;
-      mesh.position.y = data.originalPosition.y + floatY + parallaxY;
+      mesh.position.x = orbitX;
+      mesh.position.y = data.originalPosition.y + floatY;
       mesh.position.z = orbitZ;
 
       // Always face the camera (billboarding)

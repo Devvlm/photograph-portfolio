@@ -12,11 +12,7 @@ export class ClapperboardModel {
     this.model = null;
     this.mixer = null;
     this.isLoaded = false;
-    this.autoRotate = true;
     this.autoRotateSpeed = 0.003;
-    this.targetRotation = { x: 0, y: 0 };
-    this.currentRotation = { x: 0, y: 0 };
-    this.rotationEasing = 0.05;
   }
 
   /**
@@ -127,23 +123,6 @@ export class ClapperboardModel {
   }
 
   /**
-   * Set target rotation (for mouse/drag interaction)
-   * @param {number} x - X rotation target
-   * @param {number} y - Y rotation target
-   */
-  setTargetRotation(x, y) {
-    this.targetRotation.x = x;
-    this.targetRotation.y = y;
-    this.autoRotate = false;
-
-    // Resume auto-rotate after 2 seconds of inactivity
-    clearTimeout(this.autoRotateTimeout);
-    this.autoRotateTimeout = setTimeout(() => {
-      this.autoRotate = true;
-    }, 2000);
-  }
-
-  /**
    * Update animation and rotation
    * @param {number} delta - Time delta in seconds
    * @param {number} time - Total elapsed time
@@ -156,20 +135,10 @@ export class ClapperboardModel {
       this.mixer.update(delta);
     }
 
-    // Handle rotation
-    if (this.autoRotate) {
-      // Gentle auto-rotation
-      this.model.rotation.y += this.autoRotateSpeed;
-      // Subtle floating motion
-      this.model.position.y = Math.sin(time * 0.5) * 0.1;
-    } else {
-      // Smooth interpolation to target rotation
-      this.currentRotation.x += (this.targetRotation.x - this.currentRotation.x) * this.rotationEasing;
-      this.currentRotation.y += (this.targetRotation.y - this.currentRotation.y) * this.rotationEasing;
-
-      this.model.rotation.x = this.currentRotation.x;
-      this.model.rotation.y = this.currentRotation.y;
-    }
+    // Gentle auto-rotation
+    this.model.rotation.y += this.autoRotateSpeed;
+    // Subtle floating motion
+    this.model.position.y = Math.sin(time * 0.5) * 0.1;
   }
 
   /**
@@ -196,6 +165,5 @@ export class ClapperboardModel {
     if (this.mixer) {
       this.mixer.stopAllAction();
     }
-    clearTimeout(this.autoRotateTimeout);
   }
 }

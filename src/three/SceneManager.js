@@ -29,10 +29,8 @@ export class SceneManager {
     this.clock = new THREE.Clock();
     this.elapsedTime = 0;
 
-    // Mouse tracking
+    // Mouse tracking (unused, kept for potential future use)
     this.mouse = new THREE.Vector2();
-    this.isDragging = false;
-    this.previousMouse = new THREE.Vector2();
 
     // Components
     this.lighting = null;
@@ -111,20 +109,6 @@ export class SceneManager {
     // Window resize
     window.addEventListener('resize', () => this.onResize());
 
-    // Mouse move for parallax
-    this.container.addEventListener('mousemove', (e) => this.onMouseMove(e));
-
-    // Mouse down/up for drag detection
-    this.container.addEventListener('mousedown', () => {
-      this.isDragging = true;
-    });
-    this.container.addEventListener('mouseup', () => {
-      this.isDragging = false;
-    });
-
-    // Touch events for mobile
-    this.container.addEventListener('touchmove', (e) => this.onTouchMove(e));
-
     // Visibility change for performance
     document.addEventListener('visibilitychange', () => {
       this.isVisible = !document.hidden;
@@ -136,39 +120,6 @@ export class SceneManager {
 
     // Scroll for hero fade effect
     window.addEventListener('scroll', () => this.onScroll());
-  }
-
-  onMouseMove(event) {
-    // Normalize mouse position
-    const rect = this.container.getBoundingClientRect();
-    this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-    this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-    // Update floating images parallax
-    if (this.floatingImages) {
-      this.floatingImages.updateMousePosition(this.mouse.x, this.mouse.y);
-    }
-
-    // Update clapperboard rotation if dragging
-    if (this.isDragging && this.clapperboard) {
-      this.clapperboard.setTargetRotation(
-        this.mouse.y * 0.5,
-        this.mouse.x * 0.8
-      );
-    }
-  }
-
-  onTouchMove(event) {
-    if (event.touches.length === 1) {
-      const touch = event.touches[0];
-      const rect = this.container.getBoundingClientRect();
-      this.mouse.x = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
-      this.mouse.y = -((touch.clientY - rect.top) / rect.height) * 2 + 1;
-
-      if (this.floatingImages) {
-        this.floatingImages.updateMousePosition(this.mouse.x, this.mouse.y);
-      }
-    }
   }
 
   onScroll() {
