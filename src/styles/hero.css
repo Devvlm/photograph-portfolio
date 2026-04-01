@@ -26,6 +26,8 @@
 
 .hero-canvas canvas {
   display: block;
+  pointer-events: none;
+  touch-action: none;
 }
 
 /* Gradient Overlays */

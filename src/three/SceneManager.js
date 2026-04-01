@@ -4,7 +4,6 @@
  */
 
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { Lighting } from './Lighting.js';
 import { ClapperboardModel } from './ClapperboardModel.js';
 import { FloatingImages } from './FloatingImages.js';
@@ -44,7 +43,6 @@ export class SceneManager {
     this.setupScene();
     this.setupCamera();
     this.setupRenderer();
-    this.setupControls();
     this.setupComponents();
     this.setupEventListeners();
 
@@ -80,11 +78,6 @@ export class SceneManager {
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     this.container.appendChild(this.renderer.domElement);
-  }
-
-  setupControls() {
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.enabled = false;
   }
 
   setupComponents() {
@@ -196,9 +189,6 @@ export class SceneManager {
     const delta = this.clock.getDelta();
     this.elapsedTime = this.clock.getElapsedTime();
 
-    // Update controls
-    this.controls.update();
-
     // Update components
     if (this.clapperboard) {
       this.clapperboard.update(delta, this.elapsedTime);
@@ -233,9 +223,6 @@ export class SceneManager {
     if (this.lighting) this.lighting.dispose();
     if (this.clapperboard) this.clapperboard.dispose();
     if (this.floatingImages) this.floatingImages.dispose();
-
-    // Dispose controls
-    if (this.controls) this.controls.dispose();
 
     // Dispose renderer
     if (this.renderer) {
