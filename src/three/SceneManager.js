@@ -84,14 +84,7 @@ export class SceneManager {
 
   setupControls() {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.enableDamping = true;
-    this.controls.dampingFactor = 0.05;
-    this.controls.enableZoom = false;
-    this.controls.enablePan = false;
-    this.controls.minPolarAngle = Math.PI * 0.3;
-    this.controls.maxPolarAngle = Math.PI * 0.7;
-    this.controls.rotateSpeed = 0.5;
-    this.controls.autoRotate = false;
+    this.controls.enabled = false;
   }
 
   setupComponents() {
